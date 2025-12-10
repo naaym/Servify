@@ -2,18 +2,22 @@ package com.servify.provider.controller;
 
 import com.servify.provider.dto.ProviderRequest;
 import com.servify.provider.dto.ProviderResponse;
+import com.servify.provider.dto.ProviderRegistrationRequest;
+import com.servify.provider.dto.ProviderRegistrationResponse;
 import com.servify.provider.service.ProviderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -30,6 +34,12 @@ public class ProviderController {
     @GetMapping
     public ResponseEntity<List<ProviderResponse>> getProviders() {
         return ResponseEntity.ok(providerService.findAll());
+    }
+
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProviderRegistrationResponse> register(@Valid @ModelAttribute ProviderRegistrationRequest request) {
+        ProviderRegistrationResponse response = providerService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")

@@ -7,35 +7,32 @@ import jakarta.validation.constraints.Size;
 public class ClientRequest {
 
     @NotBlank
-    @Size(max = 50)
-    private String firstName;
-
-    @NotBlank
-    @Size(max = 50)
-    private String lastName;
+    @Size(max = 100)
+    private String name;
 
     @NotBlank
     @Email
     @Size(max = 255)
     private String email;
 
+    @NotBlank
+    @Size(min = 6, max = 255)
+    private String password;
+
+    @NotBlank
     @Size(max = 20)
     private String phone;
 
-    public String getFirstName() {
-        return firstName;
+    @NotBlank
+    @Size(max = 100)
+    private String governorate;
+
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -46,11 +43,27 @@ public class ClientRequest {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getPhone() {
         return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getGovernorate() {
+        return governorate;
+    }
+
+    public void setGovernorate(String governorate) {
+        this.governorate = governorate;
     }
 }

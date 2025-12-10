@@ -1,21 +1,21 @@
 package com.servify.provider.dto;
 
-import com.servify.provider.model.ProviderStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
-public class ProviderRequest {
+public class ProviderRegistrationRequest {
 
-    @NotBlank
     @NotBlank
     @Size(max = 100)
     private String name;
 
     @NotBlank
     @Email
+    @Size(max = 255)
     private String email;
 
     @NotBlank
@@ -38,7 +38,14 @@ public class ProviderRequest {
     @Min(18)
     private Integer age;
 
-    private ProviderStatus status = ProviderStatus.PENDING;
+    @NotNull
+    private MultipartFile cin;
+
+    @NotNull
+    private MultipartFile cv;
+
+    @NotNull
+    private MultipartFile diplome;
 
     public String getName() {
         return name;
@@ -96,11 +103,27 @@ public class ProviderRequest {
         this.age = age;
     }
 
-    public ProviderStatus getStatus() {
-        return status;
+    public MultipartFile getCin() {
+        return cin;
     }
 
-    public void setStatus(ProviderStatus status) {
-        this.status = status;
+    public void setCin(MultipartFile cin) {
+        this.cin = cin;
+    }
+
+    public MultipartFile getCv() {
+        return cv;
+    }
+
+    public void setCv(MultipartFile cv) {
+        this.cv = cv;
+    }
+
+    public MultipartFile getDiplome() {
+        return diplome;
+    }
+
+    public void setDiplome(MultipartFile diplome) {
+        this.diplome = diplome;
     }
 }

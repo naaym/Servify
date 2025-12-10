@@ -11,27 +11,36 @@ public final class ProviderMapper {
 
     public static Provider toEntity(ProviderRequest request) {
         Provider provider = new Provider();
-        provider.setCompanyName(request.getCompanyName());
-        provider.setServiceCategory(request.getServiceCategory());
-        provider.setHourlyRate(request.getHourlyRate());
-        provider.setActive(request.isActive());
+        provider.setName(request.getName());
+        provider.setEmail(request.getEmail());
+        provider.setPhone(request.getPhone());
+        provider.setGovernorate(request.getGovernorate());
+        provider.setDelegation(request.getDelegation());
+        provider.setAge(request.getAge());
+        provider.setStatus(request.getStatus());
         return provider;
     }
 
     public static void updateEntity(ProviderRequest request, Provider provider) {
-        provider.setCompanyName(request.getCompanyName());
-        provider.setServiceCategory(request.getServiceCategory());
-        provider.setHourlyRate(request.getHourlyRate());
-        provider.setActive(request.isActive());
+        provider.setName(request.getName());
+        provider.setEmail(request.getEmail());
+        provider.setPhone(request.getPhone());
+        provider.setGovernorate(request.getGovernorate());
+        provider.setDelegation(request.getDelegation());
+        provider.setAge(request.getAge());
+        provider.setStatus(request.getStatus());
     }
 
     public static ProviderResponse toResponse(Provider provider) {
         ProviderResponse response = new ProviderResponse();
         response.setId(provider.getId());
-        response.setCompanyName(provider.getCompanyName());
-        response.setServiceCategory(provider.getServiceCategory());
-        response.setHourlyRate(provider.getHourlyRate());
-        response.setActive(provider.isActive());
+        response.setName(provider.getName());
+        response.setEmail(provider.getEmail());
+        response.setPhone(provider.getPhone());
+        response.setGovernorate(provider.getGovernorate());
+        response.setDelegation(provider.getDelegation());
+        response.setAge(provider.getAge());
+        response.setStatus(provider.getStatus());
         response.setCreatedAt(provider.getCreatedAt());
         return response;
     }

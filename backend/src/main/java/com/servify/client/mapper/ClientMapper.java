@@ -11,27 +11,27 @@ public final class ClientMapper {
 
     public static Client toEntity(ClientRequest request) {
         Client client = new Client();
-        client.setFirstName(request.getFirstName());
-        client.setLastName(request.getLastName());
+        client.setName(request.getName());
         client.setEmail(request.getEmail());
         client.setPhone(request.getPhone());
+        client.setGovernorate(request.getGovernorate());
         return client;
     }
 
     public static void updateEntity(ClientRequest request, Client client) {
-        client.setFirstName(request.getFirstName());
-        client.setLastName(request.getLastName());
+        client.setName(request.getName());
         client.setEmail(request.getEmail());
         client.setPhone(request.getPhone());
+        client.setGovernorate(request.getGovernorate());
     }
 
     public static ClientResponse toResponse(Client client) {
         ClientResponse response = new ClientResponse();
         response.setId(client.getId());
-        response.setFirstName(client.getFirstName());
-        response.setLastName(client.getLastName());
+        response.setName(client.getName());
         response.setEmail(client.getEmail());
         response.setPhone(client.getPhone());
+        response.setGovernorate(client.getGovernorate());
         response.setCreatedAt(client.getCreatedAt());
         return response;
     }

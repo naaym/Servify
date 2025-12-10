@@ -2,13 +2,16 @@ package com.servify.provider.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import com.servify.provider.model.ProviderStatus;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -20,16 +23,38 @@ public class Provider {
     private Long id;
 
     @Column(nullable = false)
-    private String companyName;
+    private String name;
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
-    private String serviceCategory;
+    private String passwordHash;
 
     @Column(nullable = false)
-    private BigDecimal hourlyRate;
+    private String phone;
 
     @Column(nullable = false)
-    private boolean active;
+    private String governorate;
+
+    @Column(nullable = false)
+    private String delegation;
+
+    @Column(nullable = false)
+    private Integer age;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ProviderStatus status;
+
+    @Lob
+    private byte[] cin;
+
+    @Lob
+    private byte[] cv;
+
+    @Lob
+    private byte[] diplome;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
@@ -43,36 +68,92 @@ public class Provider {
         return id;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getName() {
+        return name;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getServiceCategory() {
-        return serviceCategory;
+    public String getEmail() {
+        return email;
     }
 
-    public void setServiceCategory(String serviceCategory) {
-        this.serviceCategory = serviceCategory;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public BigDecimal getHourlyRate() {
-        return hourlyRate;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setHourlyRate(BigDecimal hourlyRate) {
-        this.hourlyRate = hourlyRate;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getGovernorate() {
+        return governorate;
+    }
+
+    public void setGovernorate(String governorate) {
+        this.governorate = governorate;
+    }
+
+    public String getDelegation() {
+        return delegation;
+    }
+
+    public void setDelegation(String delegation) {
+        this.delegation = delegation;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public ProviderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProviderStatus status) {
+        this.status = status;
+    }
+
+    public byte[] getCin() {
+        return cin;
+    }
+
+    public void setCin(byte[] cin) {
+        this.cin = cin;
+    }
+
+    public byte[] getCv() {
+        return cv;
+    }
+
+    public void setCv(byte[] cv) {
+        this.cv = cv;
+    }
+
+    public byte[] getDiplome() {
+        return diplome;
+    }
+
+    public void setDiplome(byte[] diplome) {
+        this.diplome = diplome;
     }
 
     public Instant getCreatedAt() {

@@ -1,15 +1,18 @@
 package com.servify.provider.dto;
 
-import java.math.BigDecimal;
+import com.servify.provider.model.ProviderStatus;
 import java.time.Instant;
 
 public class ProviderResponse {
 
     private Long id;
-    private String companyName;
-    private String serviceCategory;
-    private BigDecimal hourlyRate;
-    private boolean active;
+    private String name;
+    private String email;
+    private String phone;
+    private String governorate;
+    private String delegation;
+    private Integer age;
+    private ProviderStatus status;
     private Instant createdAt;
 
     public Long getId() {
@@ -20,36 +23,60 @@ public class ProviderResponse {
         this.id = id;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getName() {
+        return name;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getServiceCategory() {
-        return serviceCategory;
+    public String getEmail() {
+        return email;
     }
 
-    public void setServiceCategory(String serviceCategory) {
-        this.serviceCategory = serviceCategory;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public BigDecimal getHourlyRate() {
-        return hourlyRate;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setHourlyRate(BigDecimal hourlyRate) {
-        this.hourlyRate = hourlyRate;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getGovernorate() {
+        return governorate;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setGovernorate(String governorate) {
+        this.governorate = governorate;
+    }
+
+    public String getDelegation() {
+        return delegation;
+    }
+
+    public void setDelegation(String delegation) {
+        this.delegation = delegation;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public ProviderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProviderStatus status) {
+        this.status = status;
     }
 
     public Instant getCreatedAt() {

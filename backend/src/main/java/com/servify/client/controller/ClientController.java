@@ -2,6 +2,7 @@ package com.servify.client.controller;
 
 import com.servify.client.dto.ClientRequest;
 import com.servify.client.dto.ClientResponse;
+import com.servify.client.dto.ClientRegistrationResponse;
 import com.servify.client.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,12 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<List<ClientResponse>> getClients() {
         return ResponseEntity.ok(clientService.findAll());
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ClientRegistrationResponse> register(@Valid @RequestBody ClientRequest request) {
+        ClientRegistrationResponse response = clientService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")

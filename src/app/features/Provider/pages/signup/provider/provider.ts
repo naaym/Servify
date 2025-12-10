@@ -3,7 +3,7 @@ import { Logo } from '../../../../../shared/logo/logo';
 import { ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 import { passMatch,} from '../../../../../shared/validators/pass-match.validator';
 import { isMissingFile} from '../../../../../shared/validators/filevalidation.validator';
-import { providerSignUpService } from '../../../services/provider-signup.service';
+import { ProviderSignUpService } from '../../../services/provider-signup.service';
 import { ProviderSignUpRequest } from '../../../models/provider-signup.model';
 import { ShowMessageService } from '../../../../../shared/services/showmessage.service';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ import { ArrowBigLeft, ArrowBigRight, LucideAngularModule } from 'lucide-angular
 })
 export class Provider {
   private readonly fb = inject(FormBuilder);
-  private readonly providersignupservice = inject(providerSignUpService);
+  private readonly providersignupservice = inject(ProviderSignUpService);
   private readonly showMessage = inject(ShowMessageService);
   private readonly router = inject(Router);
   arrowr=ArrowBigRight

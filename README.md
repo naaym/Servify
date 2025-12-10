@@ -67,4 +67,8 @@ cd backend
 mvn spring-boot:run
 ```
 
-The application starts on port `8080` with an in-memory H2 database enabled for quick development.
+The application starts on port `8084` with an in-memory H2 database enabled for quick development. Key endpoints:
+
+- `POST /api/auth/login` – authenticate clients and providers. Returns `access_token`, `id`, `role`, `status`, and `message` for routing the Angular app.
+- `POST /api/clients/register` – JSON payload to register a client.
+- `POST /api/providers/register` – `multipart/form-data` payload to register a provider with CIN, CV, and diploma file uploads. Providers start in `PENDING` status.
