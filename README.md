@@ -71,15 +71,15 @@ The application starts on port `8084` and uses a MySQL database named `servify`.
 
 ```sql
 CREATE DATABASE servify;
-CREATE USER 'servify'@'localhost' IDENTIFIED BY 'servify';
-GRANT ALL PRIVILEGES ON servify.* TO 'servify'@'localhost';
+CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';
+GRANT ALL PRIVILEGES ON servify.* TO 'root'@'localhost';
 ```
 
 Connection defaults (override with `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, and `MYSQL_PASSWORD`):
 
 - URL: `jdbc:mysql://localhost:3306/servify?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC`
-- Username: `servify`
-- Password: `servify`
+- Username: `root`
+- Password: `root`
 
 Key endpoints:
 
