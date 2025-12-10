@@ -88,3 +88,5 @@ Key endpoints:
 - `POST /api/providers/register` – `multipart/form-data` payload to register a provider with CIN, CV, and diploma file uploads. Providers start in `PENDING` status.
 
 CORS is enabled for `http://localhost:4200` by default. Update `app.cors.allowed-origins` in `backend/src/main/resources/application.properties` to allow additional front-end hosts during development.
+
+Multipart uploads are limited to 10 MB per file (30 MB per request) by default. Adjust `spring.servlet.multipart.max-file-size` and `spring.servlet.multipart.max-request-size` in `application.properties` if your documents are larger.
