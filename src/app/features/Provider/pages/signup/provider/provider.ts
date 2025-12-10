@@ -36,13 +36,13 @@ export class Provider {
       password: ['', [Validators.required, Validators.minLength(6)]],
       passconfirm: ['', [Validators.required, Validators.minLength(6)]],
 
-      cin: [null],
-      cv: [null],
-      diplome: [null],
+      cin: [null, Validators.required],
+      cv: [null, Validators.required],
+      diplome: [null, Validators.required],
       phone: ['', Validators.required],
       governorate: ['', Validators.required],
       delegation: ['', Validators.required],
-      age: ['', Validators.required],
+      age: ['', [Validators.required, Validators.pattern('^\\d+$')]],
     },{ validators: [passMatch] }
 
   );

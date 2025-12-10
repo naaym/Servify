@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -59,6 +61,38 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "Validation failed",
                 request.getDescription(false),
                 details
+        );
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+                                                                          HttpHeaders headers,
+                                                                          HttpStatusCode status,
+                                                                          WebRequest request) {
+        String detail = "%s parameter is required".formatted(ex.getParameterName());
+        ErrorResponse response = ErrorResponse.of(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                detail,
+                request.getDescription(false),
+                List.of(detail)
+        );
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestPart(MissingServletRequestPartException ex,
+                                                                     HttpHeaders headers,
+                                                                     HttpStatusCode status,
+                                                                     WebRequest request) {
+        String detail = "%s file is required".formatted(ex.getRequestPartName());
+        ErrorResponse response = ErrorResponse.of(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                detail,
+                request.getDescription(false),
+                List.of(detail)
         );
         return ResponseEntity.badRequest().body(response);
     }
