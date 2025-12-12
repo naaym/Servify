@@ -22,7 +22,7 @@ public class LoginResponse {
 
     private String role;
 
-    private ProviderStatus status;
-
+    private String status;
     private String message;
+
 }

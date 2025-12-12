@@ -19,7 +19,7 @@ public  class ClientMapperImpl implements ClientMapper {
         clientEntity.setEmail(request.getEmail());
         clientEntity.setPhone(request.getPhone());
         clientEntity.setGovernorate(request.getGovernorate());
-        clientEntity.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        clientEntity.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return clientEntity;
     }

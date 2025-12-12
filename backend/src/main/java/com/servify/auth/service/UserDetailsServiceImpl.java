@@ -1,8 +1,7 @@
 package com.servify.auth.service;
 
-import com.servify.auth.model.AuthenticatedUser;
-import com.servify.client.repository.ClientRepository;
-import com.servify.provider.repository.ProviderRepository;
+
+import com.servify.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,14 +12,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final ClientRepository clientRepository;
-    private final ProviderRepository providerRepository;
+   private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return providerRepository.findByEmail(username)
-                .map(AuthenticatedUser::fromProvider)
-                .or(() -> clientRepository.findByEmail(username).map(AuthenticatedUser::fromClient))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found for email: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email+" not found"));
     }
 }

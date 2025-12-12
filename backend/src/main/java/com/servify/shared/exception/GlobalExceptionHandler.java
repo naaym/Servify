@@ -1,4 +1,4 @@
-package com.servify.shared.api;
+package com.servify.shared.exception;
 
 import com.servify.provider.exceptions.EmailDuplicationException;
 import org.springframework.http.HttpStatus;
