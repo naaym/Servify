@@ -2,6 +2,7 @@ package com.servify.provider.controller;
 
 import com.servify.provider.dto.ProviderRegistrationRequest;
 import com.servify.provider.dto.ProviderRegistrationResponse;
+import com.servify.provider.service.ProviderService;
 import com.servify.provider.service.ProviderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/providers")
 public class ProviderController {
 
-    private final ProviderServiceImpl providerServiceImpl;
+    private final ProviderService providerService;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProviderRegistrationResponse> register(
@@ -49,7 +50,7 @@ public class ProviderController {
         request.setCv(cv.getOriginalFilename());
         request.setDiplome(diplome.getOriginalFilename());
 
-        ProviderRegistrationResponse response = providerServiceImpl.register(request);
+        ProviderRegistrationResponse response = providerService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
