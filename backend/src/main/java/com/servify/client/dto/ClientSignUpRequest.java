@@ -1,17 +1,16 @@
-package com.servify.provider.dto;
+package com.servify.client.dto;
 
-import com.servify.provider.model.ProviderStatus;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ProviderRequest {
+@NoArgsConstructor
+public class ClientSignUpRequest {
 
     @NotBlank
     @Size(max = 100)
@@ -19,6 +18,7 @@ public class ProviderRequest {
 
     @NotBlank
     @Email
+    @Size(max = 255)
     private String email;
 
     @NotBlank
@@ -32,14 +32,6 @@ public class ProviderRequest {
     @NotBlank
     @Size(max = 100)
     private String governorate;
-
-    @NotBlank
-    @Size(max = 100)
-    private String delegation;
-
-    @NotNull
-    @Min(18)
-    private Integer age;
 
 
 }

@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,33 +32,26 @@ import java.util.List;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/providers")
 public class ProviderController {
 
     private final ProviderService providerService;
 
-    public ProviderController(ProviderService providerService) {
-        this.providerService = providerService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ProviderResponse>> getProviders() {
-        return ResponseEntity.ok(providerService.findAll());
-    }
-
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProviderRegistrationResponse> register(
-            @RequestParam("name") @NotBlank @Size(max = 100) String name,
-            @RequestParam("email") @NotBlank @Email @Size(max = 255) String email,
-            @RequestParam("password") @NotBlank @Size(min = 6, max = 255) String password,
-            @RequestParam("phone") @NotBlank @Size(max = 20) String phone,
-            @RequestParam("governorate") @NotBlank @Size(max = 100) String governorate,
-            @RequestParam("delegation") @NotBlank @Size(max = 100) String delegation,
-            @RequestParam("age") @NotNull @Min(18) Integer age,
-            @RequestPart("cin") @NotNull MultipartFile cin,
-            @RequestPart("cv") @NotNull MultipartFile cv,
-            @RequestPart("diplome") @NotNull MultipartFile diplome
+      @RequestParam("name") String name,
+      @RequestParam("email") String email,
+      @RequestParam("password") String password,
+      @RequestParam("phone") String phone,
+      @RequestParam("governorate") String governorate,
+      @RequestParam("delegation") String delegation,
+      @RequestParam("age") Integer age,
+      @RequestPart("cin") MultipartFile cin,
+      @RequestPart("cv") MultipartFile cv,
+      @RequestPart("diplome") MultipartFile diplome
     ) {
+
         ProviderRegistrationRequest request = new ProviderRegistrationRequest();
         request.setName(name);
         request.setEmail(email);
@@ -66,33 +60,12 @@ public class ProviderController {
         request.setGovernorate(governorate);
         request.setDelegation(delegation);
         request.setAge(age);
-        request.setCin(cin);
-        request.setCv(cv);
-        request.setDiplome(diplome);
+        request.setCin(cin.getOriginalFilename());
+        request.setCv(cv.getOriginalFilename());
+        request.setDiplome(diplome.getOriginalFilename());
 
         ProviderRegistrationResponse response = providerService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProviderResponse> getProvider(@PathVariable Long id) {
-        return ResponseEntity.ok(providerService.findById(id));
-    }
-
-    @PostMapping
-    public ResponseEntity<ProviderResponse> createProvider(@Valid @RequestBody ProviderRequest request) {
-        ProviderResponse response = providerService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ProviderResponse> updateProvider(@PathVariable Long id, @Valid @RequestBody ProviderRequest request) {
-        return ResponseEntity.ok(providerService.update(id, request));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProvider(@PathVariable Long id) {
-        providerService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
 }
