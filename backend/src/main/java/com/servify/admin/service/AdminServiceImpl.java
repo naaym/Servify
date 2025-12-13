@@ -1,11 +1,13 @@
 package com.servify.admin.service;
 
+import com.servify.admin.dto.AdminDashboardStats;
 import com.servify.admin.dto.AdminRequest;
 import com.servify.admin.dto.AdminResponse;
 import com.servify.admin.dto.ProviderApplicationResponse;
 import com.servify.admin.mapper.AdminMapper;
 import com.servify.admin.model.AdminEntity;
 import com.servify.admin.repository.AdminRepository;
+import com.servify.client.repository.ClientRepository;
 import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
 import com.servify.provider.repository.ProviderRepository;
@@ -25,6 +27,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
     private final ProviderRepository providerRepository;
+    private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final AdminMapper adminMapper;
 
@@ -39,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AdminResponse> findAll() {
         return adminRepository.findAll().stream()
             .map(adminMapper::toResponse)
@@ -46,6 +50,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AdminResponse findById(Long id) {
         AdminEntity admin = adminRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + id));
@@ -73,6 +78,21 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public AdminDashboardStats getDashboardStats() {
+        AdminDashboardStats stats = new AdminDashboardStats();
+        stats.setUsers(userRepository.count());
+        stats.setProviders(providerRepository.count());
+        stats.setClients(clientRepository.count());
+        stats.setServices(0L);
+        stats.setPendingProviders(providerRepository.countByStatus(ProviderStatus.PENDING));
+        stats.setAcceptedProviders(providerRepository.countByStatus(ProviderStatus.ACCEPTED));
+        stats.setRejectedProviders(providerRepository.countByStatus(ProviderStatus.REJECTED));
+        return stats;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ProviderApplicationResponse> findProviderApplications(ProviderStatus status) {
         List<ProviderEntity> providers = Optional.ofNullable(status)
             .map(providerRepository::findAllByStatus)

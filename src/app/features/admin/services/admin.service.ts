@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Http } from '../../../core/api/http';
 import { API_ENDPOINTS } from '../../../core/api/endpoints';
 import { AdminRequest, AdminResponse } from '../models/admin.model';
+import { AdminDashboardStats } from '../models/admin-dashboard-stats.model';
 import { ProviderApplication, ProviderStatus } from '../models/provider-application.model';
 
 @Injectable({ providedIn: 'root' })
@@ -22,6 +23,10 @@ export class AdminService {
 
   deleteAdmin(id: number) {
     return this.http.delete<void>(API_ENDPOINTS.ADMIN.BASE, id);
+  }
+
+  getDashboardStats() {
+    return this.http.get<AdminDashboardStats>(API_ENDPOINTS.ADMIN.STATS);
   }
 
   getProviderRequests(status?: ProviderStatus) {

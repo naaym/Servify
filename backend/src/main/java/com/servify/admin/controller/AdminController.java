@@ -2,6 +2,7 @@ package com.servify.admin.controller;
 
 import com.servify.admin.dto.AdminRequest;
 import com.servify.admin.dto.AdminResponse;
+import com.servify.admin.dto.AdminDashboardStats;
 import com.servify.admin.dto.ProviderApplicationResponse;
 import com.servify.admin.dto.UpdateProviderStatusRequest;
 import com.servify.admin.service.AdminService;
@@ -54,6 +55,11 @@ public class AdminController {
     public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
         adminService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<AdminDashboardStats> getDashboardStats() {
+        return ResponseEntity.ok(adminService.getDashboardStats());
     }
 
     @GetMapping("/providers")

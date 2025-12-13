@@ -25,6 +25,7 @@ export const API_ENDPOINTS = {
   ,
   ADMIN:{
     BASE:'admins',
+    STATS:'admins/stats',
     PROVIDER_REQUESTS:'admins/providers',
     PROVIDER_STATUS:(id:number)=>`admins/providers/${id}/status`
   }

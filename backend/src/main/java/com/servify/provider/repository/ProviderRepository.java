@@ -12,4 +12,6 @@ public interface ProviderRepository extends JpaRepository<ProviderEntity, Long> 
     boolean existsByEmail(String email);
 
     List<ProviderEntity> findAllByStatus(ProviderStatus status);
+
+    long countByStatus(ProviderStatus status);
 }
