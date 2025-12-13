@@ -8,10 +8,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './aside-dashboard-admin.scss',
 })
 export class AsideDashboardAdmin {
-  @Input() activeSection: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' = 'dashboard';
-  @Output() sectionChange = new EventEmitter<'dashboard' | 'providers' | 'clients' | 'bookings' | 'services'>();
+  @Input() activeSection: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins' = 'dashboard';
+  @Input() isSuperAdmin = false;
+  @Output() sectionChange = new EventEmitter<'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins'>();
 
-  navigate(section: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services') {
+  navigate(section: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins') {
     if (section !== this.activeSection) {
       this.sectionChange.emit(section);
     }

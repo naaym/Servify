@@ -1,6 +1,7 @@
 <div class="min-h-screen bg-[#0B0B10] text-white flex">
   <aside-dashboard-admin
     [activeSection]="activeSection"
+    [isSuperAdmin]="isSuperAdmin"
     (sectionChange)="switchSection($event)"
   ></aside-dashboard-admin>
 
@@ -13,6 +14,9 @@
         @else if (activeSection === 'providers') {
           <h1 class="text-3xl font-bold">Prestataires</h1>
         }
+        @else if (activeSection === 'admins') {
+          <h1 class="text-3xl font-bold">Gestion des administrateurs</h1>
+        }
         <p class="text-gray-400">
           @switch (activeSection) {
             @case ('dashboard') {
@@ -20,6 +24,9 @@
             }
             @case ('providers') {
               <span>Demandes, validations et statistiques dédiées aux prestataires.</span>
+            }
+            @case ('admins') {
+              <span>Création, mise à jour et suppression des comptes administrateurs.</span>
             }
             @default {
               <span>Sélectionnez une section pour consulter les détails.</span>
@@ -57,12 +64,130 @@
             <div class="text-3xl font-bold mt-2">{{ dashboardStats?.admins ?? 0 }}</div>
           </div>
         }
-        <div class="bg-[#12121a] rounded-2xl p-5 border border-gray-800 shadow-lg">
-          <p class="text-xs text-gray-400">Services</p>
-          <div class="text-3xl font-bold mt-2">{{ dashboardStats?.services ?? 0 }}</div>
+      <div class="bg-[#12121a] rounded-2xl p-5 border border-gray-800 shadow-lg">
+        <p class="text-xs text-gray-400">Services</p>
+        <div class="text-3xl font-bold mt-2">{{ dashboardStats?.services ?? 0 }}</div>
+      </div>
+    </div>
+  }
+
+  @if (activeSection === 'admins' && isSuperAdmin) {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gradient-to-br from-purple-700/20 via-purple-900/30 to-purple-700/10 rounded-2xl p-5 border border-purple-700/40 shadow-lg">
+        <p class="text-xs text-gray-400">Administrateurs</p>
+        <div class="text-3xl font-bold mt-2">{{ dashboardStats?.admins ?? 0 }}</div>
+        <p class="text-xs text-gray-500 mt-1">Gestion réservée au super administrateur.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
+      <div class="xl:col-span-2 bg-[#12121A] p-6 rounded-2xl shadow space-y-4 border border-gray-800">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-semibold">Liste des administrateurs</h2>
+            <p class="text-gray-400 text-sm">Créer, mettre à jour ou supprimer des comptes admin.</p>
+          </div>
+          <button
+            class="px-4 py-2 rounded-lg border border-purple-600 text-purple-200 hover:bg-purple-700/30"
+            (click)="startCreateAdmin()"
+          >
+            Nouvel administrateur
+          </button>
+        </div>
+
+        @if (adminError) {
+          <div class="bg-red-900/30 text-red-200 px-4 py-3 rounded-lg border border-red-800">{{ adminError }}</div>
+        }
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-800 text-sm">
+            <thead>
+              <tr class="text-left text-gray-400">
+                <th class="py-3">Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Gouvernorat</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800">
+              @if (loadingAdmins) {
+                <tr><td colspan="5" class="py-4 text-center text-gray-400">Chargement...</td></tr>
+              }
+              @else if (!admins.length) {
+                <tr><td colspan="5" class="py-4 text-center text-gray-400">Aucun administrateur pour le moment.</td></tr>
+              }
+              @else {
+                @for (admin of admins; track admin.id) {
+                  <tr class="hover:bg-[#1D1D26]">
+                    <td class="py-3">
+                      <div class="font-semibold">{{ admin.name }}</div>
+                      <div class="text-xs text-gray-500">Créé le {{ admin.createdAt | date:'shortDate' }}</div>
+                    </td>
+                    <td>{{ admin.email }}</td>
+                    <td>{{ admin.phone }}</td>
+                    <td>{{ admin.governorate }}</td>
+                    <td class="text-right space-x-2">
+                      <button
+                        class="px-3 py-2 rounded-lg border border-blue-500 text-blue-200 hover:bg-blue-600/20"
+                        (click)="startEditAdmin(admin)"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        class="px-3 py-2 rounded-lg border border-red-600 text-red-300 hover:bg-red-600/20"
+                        (click)="deleteAdmin(admin.id)"
+                      >
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
         </div>
       </div>
-    }
+
+      <div class="bg-[#12121A] p-6 rounded-2xl shadow space-y-4 border border-gray-800">
+        <h3 class="text-lg font-semibold">@if (editingAdminId) {Éditer un admin} @else {Créer un admin}</h3>
+        <p class="text-gray-400 text-sm">Le mot de passe est requis lors de la création et optionnel lors d'une mise à jour.</p>
+        <div class="space-y-3">
+          <label class="block text-sm text-gray-300">Nom
+            <input class="mt-1 w-full bg-[#0B0B10] border border-gray-800 rounded-lg p-2" [(ngModel)]="adminForm.name" />
+          </label>
+          <label class="block text-sm text-gray-300">Email
+            <input type="email" class="mt-1 w-full bg-[#0B0B10] border border-gray-800 rounded-lg p-2" [(ngModel)]="adminForm.email" />
+          </label>
+          <label class="block text-sm text-gray-300">Téléphone
+            <input class="mt-1 w-full bg-[#0B0B10] border border-gray-800 rounded-lg p-2" [(ngModel)]="adminForm.phone" />
+          </label>
+          <label class="block text-sm text-gray-300">Gouvernorat
+            <input class="mt-1 w-full bg-[#0B0B10] border border-gray-800 rounded-lg p-2" [(ngModel)]="adminForm.governorate" />
+          </label>
+          <label class="block text-sm text-gray-300">Mot de passe
+            <input type="password" class="mt-1 w-full bg-[#0B0B10] border border-gray-800 rounded-lg p-2" [(ngModel)]="adminForm.password" placeholder="8 caractères minimum" />
+          </label>
+        </div>
+        <div class="flex gap-3">
+          <button
+            class="px-4 py-2 rounded-lg border border-purple-600 text-purple-200 hover:bg-purple-700/30"
+            (click)="saveAdmin()"
+            [disabled]="loadingAdmins"
+          >
+            @if (editingAdminId) {Mettre à jour} @else {Créer}
+          </button>
+          <button
+            class="px-4 py-2 rounded-lg border border-gray-700 text-gray-300 hover:border-purple-400"
+            type="button"
+            (click)="startCreateAdmin()"
+          >
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 
     @if (activeSection === 'providers') {
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">

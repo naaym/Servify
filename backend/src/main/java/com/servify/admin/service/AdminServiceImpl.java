@@ -16,6 +16,7 @@ import com.servify.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponse create(AdminRequest request) {
+        ensureSuperAdminAccess();
         ensureEmailIsAvailable(request.getEmail());
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password is required for admin creation");
@@ -48,6 +50,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional(readOnly = true)
     public List<AdminResponse> findAll() {
+        ensureSuperAdminAccess();
         return adminRepository.findAll().stream()
             .map(adminMapper::toResponse)
             .toList();
@@ -56,6 +59,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional(readOnly = true)
     public AdminResponse findById(Long id) {
+        ensureSuperAdminAccess();
         AdminEntity admin = adminRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + id));
         return adminMapper.toResponse(admin);
@@ -63,6 +67,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponse update(Long id, AdminRequest request) {
+        ensureSuperAdminAccess();
         AdminEntity admin = adminRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + id));
         if (!admin.getEmail().equals(request.getEmail())) {
@@ -75,6 +80,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void delete(Long id) {
+        ensureSuperAdminAccess();
         if (!adminRepository.existsById(id)) {
             throw new ResourceNotFoundException("Admin not found: " + id);
         }
@@ -131,6 +137,13 @@ public class AdminServiceImpl implements AdminService {
     private void ensureEmailIsAvailable(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email already used: " + email);
+        }
+    }
+
+    private void ensureSuperAdminAccess() {
+        Role currentRole = resolveCurrentUserRole();
+        if (currentRole != Role.SUPER_ADMIN) {
+            throw new AccessDeniedException("Only super admins can manage admins");
         }
     }
 

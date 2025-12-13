@@ -23,6 +23,17 @@
     >
       <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Providers
     </button>
+    @if (isSuperAdmin) {
+      <button
+        class="flex w-full items-center gap-3 px-4 py-3 rounded-xl border transition"
+        [class.bg-purple-600/20]="activeSection === 'admins'"
+        [class.border-purple-700/40]="activeSection === 'admins'"
+        [class.border-gray-800]="activeSection !== 'admins'"
+        (click)="navigate('admins')"
+      >
+        <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Admins
+      </button>
+    }
     <button
       class="flex w-full items-center gap-3 px-4 py-3 rounded-xl border transition"
       [class.bg-purple-600/20]="activeSection === 'clients'"

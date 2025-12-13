@@ -1,7 +1,7 @@
 export interface AdminRequest {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   phone: string;
   governorate: string;
 }
