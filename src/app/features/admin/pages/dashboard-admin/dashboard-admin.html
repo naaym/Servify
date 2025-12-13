@@ -185,55 +185,56 @@
     </ng-container>
   </div>
 
-  <div
-    *ngIf="selectedProvider"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-20"
-  >
-    <div class="bg-[#12121A] rounded-2xl max-w-4xl w-full p-6 shadow-2xl border border-purple-800/40">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <h3 class="text-2xl font-semibold">Dossier de {{ selectedProvider?.name }}</h3>
-          <p class="text-gray-400 text-sm">Coordonnées, localisation et pièces jointes.</p>
+  <ng-container *ngIf="selectedProvider as provider">
+    <div
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-20"
+    >
+      <div class="bg-[#12121A] rounded-2xl max-w-4xl w-full p-6 shadow-2xl border border-purple-800/40">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="text-2xl font-semibold">Dossier de {{ provider.name }}</h3>
+            <p class="text-gray-400 text-sm">Coordonnées, localisation et pièces jointes.</p>
+          </div>
+          <button class="text-gray-400 hover:text-white" (click)="closeApplication()">✕</button>
         </div>
-        <button class="text-gray-400 hover:text-white" (click)="closeApplication()">✕</button>
-      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm">
-        <div class="space-y-2 bg-[#1A1A24] p-4 rounded-xl border border-gray-800">
-          <div class="flex justify-between"><span class="text-gray-400">Email</span><span class="font-semibold">{{ selectedProvider?.email }}</span></div>
-          <div class="flex justify-between"><span class="text-gray-400">Téléphone</span><span class="font-semibold">{{ selectedProvider?.phone }}</span></div>
-          <div class="flex justify-between"><span class="text-gray-400">Gouvernorat</span><span class="font-semibold">{{ selectedProvider?.governorate }}</span></div>
-          <div class="flex justify-between"><span class="text-gray-400">Délégation</span><span class="font-semibold">{{ selectedProvider?.delegation }}</span></div>
-          <div class="flex justify-between"><span class="text-gray-400">Âge</span><span class="font-semibold">{{ selectedProvider?.age }}</span></div>
-          <div class="flex justify-between"><span class="text-gray-400">Statut</span><span class="font-semibold">{{ selectedProvider?.status }}</span></div>
-        </div>
-        <div class="space-y-3">
-          <div class="text-gray-400 text-xs uppercase tracking-widest">Documents</div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
-              <span class="text-xs text-gray-400">CIN</span>
-              <img *ngIf="selectedProvider?.cin" [src]="selectedProvider?.cin" alt="CIN" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
-              <span *ngIf="!selectedProvider?.cin" class="text-xs text-gray-500">Pas de fichier</span>
-            </div>
-            <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
-              <span class="text-xs text-gray-400">CV</span>
-              <img *ngIf="selectedProvider?.cv" [src]="selectedProvider?.cv" alt="CV" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
-              <span *ngIf="!selectedProvider?.cv" class="text-xs text-gray-500">Pas de fichier</span>
-            </div>
-            <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
-              <span class="text-xs text-gray-400">Diplôme</span>
-              <img *ngIf="selectedProvider?.diplome" [src]="selectedProvider?.diplome" alt="Diplôme" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
-              <span *ngIf="!selectedProvider?.diplome" class="text-xs text-gray-500">Pas de fichier</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm">
+          <div class="space-y-2 bg-[#1A1A24] p-4 rounded-xl border border-gray-800">
+            <div class="flex justify-between"><span class="text-gray-400">Email</span><span class="font-semibold">{{ provider.email }}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Téléphone</span><span class="font-semibold">{{ provider.phone }}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Gouvernorat</span><span class="font-semibold">{{ provider.governorate }}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Délégation</span><span class="font-semibold">{{ provider.delegation }}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Âge</span><span class="font-semibold">{{ provider.age }}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Statut</span><span class="font-semibold">{{ provider.status }}</span></div>
+          </div>
+          <div class="space-y-3">
+            <div class="text-gray-400 text-xs uppercase tracking-widest">Documents</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
+                <span class="text-xs text-gray-400">CIN</span>
+                <img *ngIf="provider.cin" [src]="provider.cin" alt="CIN" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
+                <span *ngIf="!provider.cin" class="text-xs text-gray-500">Pas de fichier</span>
+              </div>
+              <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
+                <span class="text-xs text-gray-400">CV</span>
+                <img *ngIf="provider.cv" [src]="provider.cv" alt="CV" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
+                <span *ngIf="!provider.cv" class="text-xs text-gray-500">Pas de fichier</span>
+              </div>
+              <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
+                <span class="text-xs text-gray-400">Diplôme</span>
+                <img *ngIf="provider.diplome" [src]="provider.diplome" alt="Diplôme" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
+                <span *ngIf="!provider.diplome" class="text-xs text-gray-500">Pas de fichier</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="flex justify-end gap-3 mt-6">
-        <button class="px-4 py-2 rounded-lg border border-gray-700 hover:border-purple-400" (click)="closeApplication()">Fermer</button>
-        <button class="px-4 py-2 rounded-lg border border-green-600 text-green-200 hover:bg-green-600/20" (click)="updateStatus(selectedProvider!.id, 'ACCEPTED')">Accepter</button>
-        <button class="px-4 py-2 rounded-lg border border-red-600 text-red-200 hover:bg-red-600/20" (click)="updateStatus(selectedProvider!.id, 'REJECTED')">Rejeter</button>
+        <div class="flex justify-end gap-3 mt-6">
+          <button class="px-4 py-2 rounded-lg border border-gray-700 hover:border-purple-400" (click)="closeApplication()">Fermer</button>
+          <button class="px-4 py-2 rounded-lg border border-green-600 text-green-200 hover:bg-green-600/20" (click)="updateStatus(provider.id, 'ACCEPTED')">Accepter</button>
+          <button class="px-4 py-2 rounded-lg border border-red-600 text-red-200 hover:bg-red-600/20" (click)="updateStatus(provider.id, 'REJECTED')">Rejeter</button>
+        </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </div>
