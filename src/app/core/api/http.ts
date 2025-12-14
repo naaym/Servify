@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable,inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { API_ENDPOINTS } from './endpoints';
+
+type QueryParams = HttpParams | Record<string, string | number | boolean>;
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +20,17 @@ export class Http {
     return this.http.post<T>(this.buildUrl(endpoint), body);
   }
 
-  get<T>(endpoint: string, options?: any) {
-    const normalizedOptions = options
-      ? options.params
-        ? options
-        : { params: options }
-      : {};
+  get<T>(endpoint: string, options?: QueryParams | { params?: QueryParams }) {
+    const normalizedOptions = options && 'params' in (options as any)
+      ? (options as { params?: QueryParams })
+      : options
+        ? { params: options as QueryParams }
+        : {};
 
-    return this.http.get<T>(this.buildUrl(endpoint), normalizedOptions);
+    return this.http.get<T>(this.buildUrl(endpoint), {
+      ...normalizedOptions,
+      observe: 'body' as const,
+    });
   }
 
   getAll<T>(endpoint: string) {
