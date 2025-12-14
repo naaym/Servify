@@ -24,7 +24,7 @@ public interface ProviderRepository extends JpaRepository<ProviderEntity, Long> 
             AND (:minPrice IS NULL OR p.basePrice >= :minPrice)
             AND (:maxPrice IS NULL OR p.basePrice <= :maxPrice)
             AND (:minRating IS NULL OR p.rating >= :minRating)
-            AND p.status = com.servify.provider.model.ProviderStatus.APPROVED
+            AND p.status = com.servify.provider.model.ProviderStatus.ACCEPTED
             """)
     List<ProviderEntity> searchApprovedProviders(String serviceCategory,
                                                  String governorate,
