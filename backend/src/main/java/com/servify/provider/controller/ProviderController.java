@@ -46,9 +46,10 @@ public class ProviderController {
         request.setGovernorate(governorate);
         request.setDelegation(delegation);
         request.setAge(age);
-        request.setCin(cin.getOriginalFilename());
-        request.setCv(cv.getOriginalFilename());
-        request.setDiplome(diplome.getOriginalFilename());
+        request.setCin(cin);
+        request.setCv(cv);
+        request.setDiplome(diplome);
+
 
         ProviderRegistrationResponse response = providerService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

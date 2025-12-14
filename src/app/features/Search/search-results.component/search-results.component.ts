@@ -4,12 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { searchProviderService } from '../services/provider-search.service';
 import { SearchProviderRequest } from '../models/relsult-search.model';
 import { Provider } from '../models/provider.model';
-import { Footer } from '../../../shared/footer/footer';
 import { Header } from '../../../shared/header/header';
 
 @Component({
   selector: 'app-search-results.component',
-  imports: [ProviderCardComponent,Footer,Header],
+  imports: [ProviderCardComponent,Header],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.scss',
 })

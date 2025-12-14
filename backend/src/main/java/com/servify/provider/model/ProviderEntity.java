@@ -29,11 +29,15 @@ public class ProviderEntity extends UserEntity {
     private int age;
 
 
-    private String cin;
+    private String cinUrl;
 
-    private String cv;
+    private String cvUrl;
 
-    private String diplome;
+    private String diplomeUrl;
+    private String cinName;
+    private String cvName;
+    private String diplomeName;
+
 
 
 
