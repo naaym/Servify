@@ -4,6 +4,7 @@ import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +27,12 @@ public interface ProviderRepository extends JpaRepository<ProviderEntity, Long> 
             AND (:minRating IS NULL OR p.rating >= :minRating)
             AND p.status = :status
             """)
-    List<ProviderEntity> searchApprovedProviders(String serviceCategory,
-                                                 String governorate,
-                                                 String delegation,
-                                                 Double minPrice,
-                                                 Double maxPrice,
-                                                 Double minRating,
-                                                 ProviderStatus status);
+    List<ProviderEntity> searchApprovedProviders(
+      @Param("serviceCategory") String serviceCategory,
+      @Param("governorate") String governorate,
+      @Param("delegation") String delegation,
+      @Param("minPrice") Double minPrice,
+      @Param("maxPrice") Double maxPrice,
+      @Param("minRating") Double minRating,
+      @Param("status") ProviderStatus status);
 }

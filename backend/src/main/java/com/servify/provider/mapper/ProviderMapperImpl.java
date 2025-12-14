@@ -1,6 +1,7 @@
 package com.servify.provider.mapper;
 
 import com.servify.provider.dto.ProviderRegistrationRequest;
+import com.servify.provider.dto.ProviderSearchResponse;
 import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
 import com.servify.user.enums.Role;
