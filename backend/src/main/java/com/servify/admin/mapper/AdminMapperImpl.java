@@ -63,6 +63,12 @@ public class AdminMapperImpl implements AdminMapper {
         response.setAge(providerEntity.getAge());
         response.setStatus(providerEntity.getStatus());
         response.setCreatedAt(providerEntity.getCreatedAt());
+        response.setCinUrl(providerEntity.getCinUrl());
+        response.setCvUrl(providerEntity.getCvUrl());
+        response.setDiplomeUrl(providerEntity.getDiplomeUrl());
+        response.setCinName(providerEntity.getCinName());
+        response.setCvName(providerEntity.getCvName());
+        response.setDiplomeName(providerEntity.getDiplomeName());
         return response;
     }
 }

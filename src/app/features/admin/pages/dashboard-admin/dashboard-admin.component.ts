@@ -14,6 +14,7 @@ import { AdminRequest, AdminResponse } from '../../models/admin.model';
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.scss',
 })
+
 export class DashboardAdmin implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly tokenService = inject(TokenService);

@@ -47,8 +47,16 @@
     @if (activeSection === 'dashboard') {
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
         <div class="bg-gradient-to-br from-purple-700/20 via-purple-900/30 to-purple-700/10 rounded-2xl p-5 border border-purple-700/40 shadow-lg">
-          <p class="text-xs text-gray-400">Utilisateurs</p>
-          <div class="text-3xl font-bold mt-2">{{ dashboardStats?.users ?? 0 }}</div>
+          @if(isSuperAdmin){
+
+            <p class="text-xs text-gray-400">Utilisateurs</p>
+            <div class="text-3xl font-bold mt-2">{{ dashboardStats?.users ?? 0 }}</div>
+          }
+          @if(!isSuperAdmin){
+
+            <p class="text-xs text-gray-400">Utilisateurs</p>
+            <div class="text-3xl font-bold mt-2">{{ dashboardStats!.users - dashboardStats!.admins  }}</div>
+          }
         </div>
         <div class="bg-[#12121a] rounded-2xl p-5 border border-gray-800 shadow-lg">
           <p class="text-xs text-gray-400">Prestataires</p>
@@ -243,9 +251,9 @@
                     <div class="text-xs text-gray-400">{{ provider.delegation }}</div>
                   </td>
                   <td class="space-y-1 text-xs">
-                    <div class="text-gray-300">CIN: {{ provider.cin }}</div>
-                    <div class="text-gray-300">CV: {{ provider.cv }}</div>
-                    <div class="text-gray-300">Diplôme: {{ provider.diplome }}</div>
+                    <div class="text-gray-300">CIN: {{ provider.cinName }}</div>
+                    <div class="text-gray-300">CV: {{ provider.cvName }}</div>
+                    <div class="text-gray-300">Diplôme: {{ provider.diplomeName }}</div>
                   </td>
                   <td>
                     <span
@@ -266,18 +274,21 @@
                     >
                       Voir
                     </button>
-                    <button
+                    @if(provider.status==="PENDING"){
+
+                      <button
                       class="px-3 py-2 rounded-lg border border-green-600 text-green-300 hover:bg-green-600/20"
                       (click)="updateStatus(provider.id, 'ACCEPTED')"
-                    >
+                      >
                       Accepter
                     </button>
                     <button
-                      class="px-3 py-2 rounded-lg border border-red-600 text-red-300 hover:bg-red-600/20"
-                      (click)="updateStatus(provider.id, 'REJECTED')"
+                    class="px-3 py-2 rounded-lg border border-red-600 text-red-300 hover:bg-red-600/20"
+                    (click)="updateStatus(provider.id, 'REJECTED')"
                     >
-                      Rejeter
-                    </button>
+                    Rejeter
+                  </button>
+                }
                   </td>
                 </tr>
               }
@@ -359,42 +370,62 @@
           </div>
           <div class="space-y-3">
             <div class="text-gray-400 text-xs uppercase tracking-widest">Documents</div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
-                <span class="text-xs text-gray-400">CIN</span>
-                @if (provider.cin) {
-                  <img [src]="provider.cin" alt="CIN" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
-                }
-                @else {
-                  <span class="text-xs text-gray-500">Pas de fichier</span>
-                }
-              </div>
-              <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
-                <span class="text-xs text-gray-400">CV</span>
-                @if (provider.cv) {
-                  <img [src]="provider.cv" alt="CV" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
-                }
-                @else {
-                  <span class="text-xs text-gray-500">Pas de fichier</span>
-                }
-              </div>
-              <div class="bg-[#1A1A24] p-3 rounded-xl border border-gray-800 flex flex-col gap-2">
-                <span class="text-xs text-gray-400">Diplôme</span>
-                @if (provider.diplome) {
-                  <img [src]="provider.diplome" alt="Diplôme" class="rounded-lg object-cover h-32 w-full border border-gray-800" />
-                }
-                @else {
-                  <span class="text-xs text-gray-500">Pas de fichier</span>
-                }
-              </div>
+            
+              <div class="bg-[#1A1A24] p-4 rounded-xl border border-gray-800">
+              <ul class="space-y-4 text-sm">
+  <li class="flex items-start gap-3">
+    <span class="mt-1 text-white-400 text-3xl">•</span>
+    <div>
+      <div class="text-xs text-gray-400">CIN</div>
+      <a
+        [href]="provider.cinUrl"
+        target="_blank"
+        class="text-purple-300 hover:underline break-all"
+      >
+        {{ provider.cinName || 'Ouvrir le fichier' }}
+      </a>
+    </div>
+  </li>
+
+  <li class="flex items-start gap-3">
+    <span class="mt-1 text-white-400 text-3xl">•</span>
+    <div>
+      <div class="text-xs text-gray-400">CV</div>
+      <a
+        [href]="provider.cvUrl"
+        target="_blank"
+        class="text-purple-300 hover:underline break-all"
+      >
+        {{ provider.cvName || 'Ouvrir le fichier' }}
+      </a>
+    </div>
+  </li>
+
+  <li class="flex items-start gap-3">
+    <span class="mt-1 text-white-400 text-3xl">•</span>
+    <div>
+      <div class="text-xs text-gray-400">Diplôme</div>
+      <a
+        [href]="provider.diplomeUrl"
+        target="_blank"
+        class="text-purple-300 hover:underline break-all"
+      >
+        {{ provider.diplomeName || 'Ouvrir le fichier' }}
+      </a>
+    </div>
+  </li>
+</ul>
             </div>
           </div>
         </div>
 
         <div class="flex justify-end gap-3 mt-6">
           <button class="px-4 py-2 rounded-lg border border-gray-700 hover:border-purple-400" (click)="closeApplication()">Fermer</button>
+                    @if(provider.status==="PENDING"){
+
           <button class="px-4 py-2 rounded-lg border border-green-600 text-green-200 hover:bg-green-600/20" (click)="updateStatus(provider.id, 'ACCEPTED')">Accepter</button>
           <button class="px-4 py-2 rounded-lg border border-red-600 text-red-200 hover:bg-red-600/20" (click)="updateStatus(provider.id, 'REJECTED')">Rejeter</button>
+                    }
         </div>
       </div>
     </div>

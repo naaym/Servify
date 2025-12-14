@@ -31,6 +31,9 @@ export class Login {
           case 'ADMIN':
             this.router.navigate(['/admins/dashboard']);
             break;
+          case 'SUPER_ADMIN':
+            this.router.navigate(['/admins/dashboard']);
+            break;
 
           case 'PROVIDER':
             switch (val.status) {

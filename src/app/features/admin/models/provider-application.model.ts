@@ -9,8 +9,11 @@ export interface ProviderApplication {
   delegation: string;
   age: number;
   status: ProviderStatus;
-  cin: string;
-  cv: string;
-  diplome: string;
+  cinUrl: string;
+  cvUrl: string;
+  diplomeUrl: string;
+  cvName:string;
+  cinName:string;
+  diplomeName:string;
   createdAt: string;
 }
