@@ -17,8 +17,11 @@ public class ProviderApplicationResponse {
     private String delegation;
     private int age;
     private ProviderStatus status;
-    private String cin;
-    private String cv;
-    private String diplome;
+    private String cinUrl;
+    private String cvUrl;
+    private String diplomeUrl;
     private Instant createdAt;
+    private String cinName;
+    private String cvName;
+    private String diplomeName;
 }

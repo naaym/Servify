@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +33,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<AdminResponse> createAdmin(@Valid @RequestBody AdminRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminService.create(request));
     }
@@ -56,7 +58,7 @@ public class AdminController {
         adminService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/stats")
     public ResponseEntity<AdminDashboardStats> getDashboardStats() {
         return ResponseEntity.ok(adminService.getDashboardStats());
@@ -64,16 +66,14 @@ public class AdminController {
 
     @GetMapping("/providers")
     public ResponseEntity<List<ProviderApplicationResponse>> findProviderApplications(
-        @RequestParam(value = "status", required = false) ProviderStatus status
-    ) {
+        @RequestParam(value = "status", required = false) ProviderStatus status ) {
         return ResponseEntity.ok(adminService.findProviderApplications(status));
     }
 
     @PatchMapping("/providers/{providerId}/status")
     public ResponseEntity<ProviderApplicationResponse> updateProviderStatus(
         @PathVariable("providerId") Long providerId,
-        @Valid @RequestBody UpdateProviderStatusRequest request
-    ) {
+        @Valid @RequestBody UpdateProviderStatusRequest request ) {
         return ResponseEntity.ok(adminService.updateProviderStatus(providerId, request.getStatus()));
     }
 }

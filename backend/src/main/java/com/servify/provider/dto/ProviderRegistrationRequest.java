@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.mutable.Mutable;
 import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
@@ -19,9 +20,12 @@ public class ProviderRegistrationRequest {
     private String governorate;
     private String delegation;
     private int age;
-    private String  cin;
-    private String cv;
-    private String diplome;
+    private MultipartFile  cin;
+    private MultipartFile cv;
+    private MultipartFile diplome;
+    private String cinName;
+    private String cvName;
+    private String diplomeName;
 
 
 }

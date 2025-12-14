@@ -12,8 +12,10 @@ import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
 import com.servify.provider.repository.ProviderRepository;
 import com.servify.shared.exception.ResourceNotFoundException;
+import com.servify.user.UserNotFoundException;
 import com.servify.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,7 +40,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponse create(AdminRequest request) {
-        ensureSuperAdminAccess();
         ensureEmailIsAvailable(request.getEmail());
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password is required for admin creation");
@@ -50,7 +51,6 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional(readOnly = true)
     public List<AdminResponse> findAll() {
-        ensureSuperAdminAccess();
         return adminRepository.findAll().stream()
             .map(adminMapper::toResponse)
             .toList();
@@ -59,20 +59,20 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional(readOnly = true)
     public AdminResponse findById(Long id) {
-        ensureSuperAdminAccess();
         AdminEntity admin = adminRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + id));
+            .orElseThrow(() -> new UserNotFoundException("Admin not found: " + id));
         return adminMapper.toResponse(admin);
     }
 
     @Override
+    @Transactional
+    //lezem updateRequest mech admin
     public AdminResponse update(Long id, AdminRequest request) {
-        ensureSuperAdminAccess();
         AdminEntity admin = adminRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Admin not found: " + id));
+            .orElseThrow(() -> new UserNotFoundException("Admin not found: " + id));
+
         if (!admin.getEmail().equals(request.getEmail())) {
             ensureEmailIsAvailable(request.getEmail());
-            admin.setEmail(request.getEmail());
         }
         adminMapper.updateEntity(admin, request);
         return adminMapper.toResponse(admin);
@@ -80,9 +80,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void delete(Long id) {
-        ensureSuperAdminAccess();
         if (!adminRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Admin not found: " + id);
+            throw new UserNotFoundException("Admin not found: " + id);
         }
         adminRepository.deleteById(id);
     }
@@ -94,23 +93,17 @@ public class AdminServiceImpl implements AdminService {
         long providerCount = providerRepository.count();
         long clientCount = clientRepository.count();
         long adminCount = adminRepository.count();
+        long userCount = userRepository.count();
 
         stats.setProviders(providerCount);
         stats.setClients(clientCount);
         stats.setAdmins(adminCount);
         stats.setServices(0L);
+        stats.setUsers(userCount);
         stats.setPendingProviders(providerRepository.countByStatus(ProviderStatus.PENDING));
         stats.setAcceptedProviders(providerRepository.countByStatus(ProviderStatus.ACCEPTED));
         stats.setRejectedProviders(providerRepository.countByStatus(ProviderStatus.REJECTED));
 
-        Role currentRole = resolveCurrentUserRole();
-        if (currentRole == Role.SUPER_ADMIN) {
-            stats.setUsers(providerCount + clientCount + adminCount);
-        } else if (currentRole == Role.ADMIN) {
-            stats.setUsers(providerCount + clientCount);
-        } else {
-            stats.setUsers(userRepository.count());
-        }
         return stats;
     }
 
@@ -136,33 +129,12 @@ public class AdminServiceImpl implements AdminService {
 
     private void ensureEmailIsAvailable(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email already used: " + email);
+            throw new UserNotFoundException("Email already used: " + email);
         }
     }
 
-    private void ensureSuperAdminAccess() {
-        Role currentRole = resolveCurrentUserRole();
-        if (currentRole != Role.SUPER_ADMIN) {
-            throw new AccessDeniedException("Only super admins can manage admins");
-        }
-    }
 
-    private Role resolveCurrentUserRole() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
 
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            String name = authority.getAuthority();
-            if (name != null && name.startsWith("ROLE_")) {
-                try {
-                    return Role.valueOf(name.substring("ROLE_".length()));
-                } catch (IllegalArgumentException ignored) {
-                    // continue
-                }
-            }
-        }
-        return null;
-    }
+
+
 }

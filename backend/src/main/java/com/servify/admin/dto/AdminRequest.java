@@ -17,7 +17,7 @@ public class AdminRequest {
     @Email
     private String email;
 
-    @Size(min = 8, message = "Password must have at least 8 characters")
+    @Size(min = 6, message = "Password must have at least 6 characters")
     private String password;
 
     @NotBlank

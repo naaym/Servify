@@ -33,6 +33,7 @@ public class AdminMapperImpl implements AdminMapper {
         entity.setName(request.getName());
         entity.setPhone(request.getPhone());
         entity.setGovernorate(request.getGovernorate());
+        entity.setEmail(request.getEmail());
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             entity.setPassword(passwordEncoder.encode(request.getPassword()));
         }
@@ -61,9 +62,6 @@ public class AdminMapperImpl implements AdminMapper {
         response.setDelegation(providerEntity.getDelegation());
         response.setAge(providerEntity.getAge());
         response.setStatus(providerEntity.getStatus());
-        response.setCin(providerEntity.getCin());
-        response.setCv(providerEntity.getCv());
-        response.setDiplome(providerEntity.getDiplome());
         response.setCreatedAt(providerEntity.getCreatedAt());
         return response;
     }
