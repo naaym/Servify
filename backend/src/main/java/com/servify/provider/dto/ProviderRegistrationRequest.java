@@ -20,6 +20,9 @@ public class ProviderRegistrationRequest {
     private String governorate;
     private String delegation;
     private int age;
+    private String serviceCategory;
+    private Double basePrice;
+    private String description;
     private MultipartFile  cin;
     private MultipartFile cv;
     private MultipartFile diplome;

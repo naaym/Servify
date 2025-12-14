@@ -2,6 +2,9 @@ package com.servify.provider.service;
 
 import com.servify.provider.dto.ProviderRegistrationRequest;
 import com.servify.provider.dto.ProviderRegistrationResponse;
+import com.servify.provider.dto.ProviderSearchRequest;
+import com.servify.provider.dto.ProviderSearchResult;
+import com.servify.provider.dto.ProviderSearchResponse;
 
 import com.servify.provider.exceptions.EmailDuplicationException;
 import com.servify.provider.mapper.ProviderMapper;
@@ -11,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
 
 
 
@@ -36,6 +42,44 @@ public class ProviderServiceImpl implements ProviderService{
 
         ProviderEntity saved = providerRepository.save(savedEntity);
         return new ProviderRegistrationResponse(saved.getUserId(), saved.getStatus());
+    }
+
+    @Override
+    public ProviderSearchResult searchProviders(ProviderSearchRequest request) {
+        List<ProviderEntity> providers = providerRepository.searchApprovedProviders(
+                request.getServiceCategory(),
+                request.getGovernorate(),
+                request.getDelegation(),
+                request.getMinPrice(),
+                request.getMaxPrice(),
+                request.getMinRating()
+        );
+
+        sortProviders(providers, request.getSortBy());
+
+        List<ProviderSearchResponse> results = providers.stream()
+                .map(providerMapper::toSearchResponse)
+                .toList();
+
+        return new ProviderSearchResult(results, results.size());
+    }
+
+    private void sortProviders(List<ProviderEntity> providers, String sortBy) {
+        if (providers == null || providers.isEmpty()) {
+            return;
+        }
+
+        if (sortBy == null || sortBy.isBlank()) {
+            providers.sort(Comparator.comparing(ProviderEntity::getRating, Comparator.nullsLast(Comparator.reverseOrder())));
+            return;
+        }
+
+        switch (sortBy) {
+            case "PRICE_ASC" -> providers.sort(Comparator.comparing(ProviderEntity::getBasePrice, Comparator.nullsLast(Double::compareTo)));
+            case "PRICE_DESC" -> providers.sort(Comparator.comparing(ProviderEntity::getBasePrice, Comparator.nullsLast(Double::compareTo)).reversed());
+            case "REVIEWS_DESC" -> providers.sort(Comparator.comparing(ProviderEntity::getReviewCount, Comparator.nullsLast(Integer::compareTo)).reversed());
+            default -> providers.sort(Comparator.comparing(ProviderEntity::getRating, Comparator.nullsLast(Double::compareTo)).reversed());
+        }
     }
 
     private void ensureEmailIsAvailable(String email) {

@@ -1,116 +1,98 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ProviderCardComponent } from '../components/provider-card.component/provider-card.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { searchProviderService } from '../services/provider-search.service';
+import { SearchProviderService } from '../services/provider-search.service';
 import { SearchProviderRequest } from '../models/relsult-search.model';
 import { Provider } from '../models/provider.model';
 import { Header } from '../../../shared/header/header';
 
 @Component({
   selector: 'app-search-results.component',
-  imports: [ProviderCardComponent,Header],
+  standalone: true,
+  imports: [CommonModule, ProviderCardComponent,Header],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.scss',
 })
 export class SearchResultsComponent implements OnInit {
-  activatedRoute=inject(ActivatedRoute)
-  search=inject(searchProviderService)
-  router=inject(Router);
-  // initialisation mte3 searchProviderRequest
-  totalPages:number=3
-  service:string=""
-  city:string="";
-  minPrice!: number ;
-  maxPrice!: number;
-  rate!: number;
-  sort!:string;
-  page:number=0;
-  size:number=10;
-  providerInfoResults!:Provider[]
-  //----------------------------------
+  activatedRoute = inject(ActivatedRoute);
+  searchService = inject(SearchProviderService);
+  router = inject(Router);
+
+  serviceCategory = '';
+  city = '';
+  delegation = '';
+  minPrice?: number;
+  maxPrice?: number;
+  minRating?: number;
+  sort: SearchProviderRequest['sortBy'] = 'RATING_DESC';
+
+  providers: Provider[] = [];
+  total = 0;
+
   ngOnInit(): void {
-    this.service=this.activatedRoute.snapshot.queryParamMap.get("service") || "";
-    this.city=this.activatedRoute.snapshot.queryParamMap.get("city") || "";
-    this.fetchResults();
-
-  }
-
-
-fetchResults(){
-      const request:SearchProviderRequest ={service : this.service,
-        governorate:this.city,
-        minPrice:this.minPrice,
-        maxPrice:this.maxPrice,
-        rate:this.rate,
-        skills:this.selectedSkills,
-        sort:this.sort,
-        page:this.page,
-        size:this.size}
-        console.log(request)
-         this.search.searchProvider(request).subscribe({next:(resp)=>{
-           this.providerInfoResults=resp.provider;
-           console.log(resp)}})
-      }
-
-
-      showProviderDetails(id:number){
-        this.router.navigate(["/search/providers",id])
-
-  }
-  newBooking(id:number){
-    this.router.navigate(["/providers",id,"booking"])
-  }
-  //extraction mte3 les donnes me template
-
-  onMinPriceChange(event:Event){
-    const input = event.target as HTMLInputElement
-    this.minPrice= +input.value
-
-    this.fetchResults()
-
-  }
-  onMaxPriceChange(event:Event){
-    const input = event.target as HTMLInputElement
-    this.maxPrice= +input.value
-    this.fetchResults()
-  }
-  onRatingChange(rate:string){
-    this.rate=+rate
+    this.serviceCategory =
+      this.activatedRoute.snapshot.queryParamMap.get('service') || '';
+    this.city = this.activatedRoute.snapshot.queryParamMap.get('city') || '';
+    this.delegation =
+      this.activatedRoute.snapshot.queryParamMap.get('delegation') || '';
     this.fetchResults();
   }
-  onSortChange(event:Event){
-    const input=event.target as HTMLInputElement
-    this.sort=input.value;
-    this.fetchResults()
-  }
-  resetFilters(){
-      this.sort = "rating,desc";
-  this.page = 0;
-  this.size = 10;
 
-  this.minPrice =0
-  this.maxPrice = 0
-  this.rate = 0
-  this.selectedSkills = [];
-  this.fetchResults()
+  fetchResults() {
+    const request: SearchProviderRequest = {
+      serviceCategory: this.serviceCategory,
+      governorate: this.city,
+      delegation: this.delegation,
+      minPrice: this.minPrice,
+      maxPrice: this.maxPrice,
+      minRating: this.minRating,
+      sortBy: this.sort,
+    };
 
+    this.searchService.searchProvider(request).subscribe((resp) => {
+      this.providers = resp.providers;
+      this.total = resp.total;
+    });
   }
-  //---------------------------
-  nextPage(){
-    this.page++
-    this.fetchResults()
-  }
-  prevPage(){
-    this.page--
-    this.fetchResults()
 
+  showProviderDetails(id: number) {
+    this.router.navigate(['/search/providers', id]);
   }
-  //-------------- pour les skills selectionness
-  selectedSkills:string[]=[];
-  disabledSkills:{[key:string]:boolean}={};
-  toggleSkill(skill:string){
-      this.disabledSkills[skill]=true
-    this.selectedSkills.push(skill);
+
+  newBooking(id: number) {
+    this.router.navigate(['/providers', id, 'booking']);
+  }
+
+  onMinPriceChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.minPrice = input.value ? +input.value : undefined;
+    this.fetchResults();
+  }
+
+  onMaxPriceChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.maxPrice = input.value ? +input.value : undefined;
+    this.fetchResults();
+  }
+
+  onRatingChange(rate: string) {
+    this.minRating = rate ? +rate : undefined;
+    this.fetchResults();
+  }
+
+  onSortChange(event: Event) {
+    const input = event.target as HTMLSelectElement;
+    const value = input.value as SearchProviderRequest['sortBy'];
+    this.sort = value;
+    this.fetchResults();
+  }
+
+  resetFilters() {
+    this.sort = 'RATING_DESC';
+    this.minPrice = undefined;
+    this.maxPrice = undefined;
+    this.minRating = undefined;
     this.fetchResults();
   }
 
@@ -136,37 +118,6 @@ fetchResults(){
 
 
 
-
-
-
-
-  // mock test
-  providers = [
-    {
-      providerId: 10,
-      name: 'iheb hkiri',
-      service: 'SWE',
-      governorate: 'Ariana',
-      delegation:'bir el bay',
-      reviewsCount: 20,
-      price: 50,
-      imageProviderUrl: 'kjsldfdf',
-      skills: ['pentesting'],
-      rate: 4.9,
-    },
-    {
-      providerId: 30,
-      name: 'fedi bazzi',
-      service: 'winou',
-      governorate: 'jandouba',
-      delegation:'bir el bay',
-      reviewsCount: 20,
-      price: 50,
-      imageProviderUrl: 'kjsldfdf',
-      skills: ['web dev '],
-      rate: 4.9,
-    },
-  ];
 }
 
 

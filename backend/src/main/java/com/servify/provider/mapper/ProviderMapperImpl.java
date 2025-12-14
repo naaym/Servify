@@ -20,13 +20,33 @@ public  class ProviderMapperImpl implements ProviderMapper {
         providerEntity.setGovernorate(request.getGovernorate());
         providerEntity.setDelegation(request.getDelegation());
         providerEntity.setAge(request.getAge());
+        providerEntity.setServiceCategory(request.getServiceCategory());
+        providerEntity.setBasePrice(request.getBasePrice());
+        providerEntity.setDescription(request.getDescription());
         providerEntity.setStatus(ProviderStatus.PENDING);
         providerEntity.setRole(Role.PROVIDER);
+        providerEntity.setRating(0.0);
+        providerEntity.setReviewCount(0);
         providerEntity.setCinName(request.getCin().getOriginalFilename());
         providerEntity.setCvName(request.getCv().getOriginalFilename());
         providerEntity.setDiplomeName(request.getDiplome().getOriginalFilename());
 
         return providerEntity;
+    }
+
+    @Override
+    public ProviderSearchResponse toSearchResponse(ProviderEntity entity) {
+        ProviderSearchResponse response = new ProviderSearchResponse();
+        response.setId(entity.getUserId());
+        response.setName(entity.getName());
+        response.setServiceCategory(entity.getServiceCategory());
+        response.setGovernorate(entity.getGovernorate());
+        response.setDelegation(entity.getDelegation());
+        response.setBasePrice(entity.getBasePrice());
+        response.setRating(entity.getRating());
+        response.setReviewCount(entity.getReviewCount());
+        response.setDescription(entity.getDescription());
+        return response;
     }
 
 }
