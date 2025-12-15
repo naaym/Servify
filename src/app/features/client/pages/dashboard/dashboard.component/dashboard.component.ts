@@ -8,33 +8,29 @@ import { ShowMessageService } from '../../../../../shared/services/showmessage.s
 
 @Component({
   selector: 'app-dashboard.component',
-  imports: [BookingsListComponent,AsideComponent,StatCardComponent],
+  imports: [BookingsListComponent, AsideComponent, StatCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-
 export class DashboardComponent implements OnInit {
-clientbooking=inject(ClientBookingService);
-showmessage=inject(ShowMessageService)
-stats:StatsBooking|null=null;
-errorMessage:string=""
+  clientbooking = inject(ClientBookingService);
+  showmessage = inject(ShowMessageService);
+  stats: StatsBooking | null = null;
+  errorMessage: string = "";
 
-ngOnInit(): void {
-  this.loadStats();
+  ngOnInit(): void {
+    this.loadStats();
+  }
 
-}
-loadStats(){
-  this.clientbooking.getMyStats().subscribe({
-    next:(res)=>console.log(res)
-
-  })
-}
-
-
-
-
-
-
-
-
+  loadStats() {
+    this.clientbooking.getMyStats().subscribe({
+      next: (res: StatsBooking) => {
+        this.stats = res;
+      },
+      error: (error) => {
+        this.errorMessage = error?.message ?? 'Unable to load stats';
+        this.showmessage.showError(this.errorMessage);
+      }
+    })
+  }
 }

@@ -10,18 +10,48 @@ export class BookingService {
 
   http=inject(Http);
   createBooking(dto:BookingRequest){
-    const formdata=new FormData();
-    formdata.append('providerId',String(dto.providerId));
-    formdata.append('date',dto.date);
-    formdata.append('time',dto.time);
-    formdata.append('description',dto.description);
-    dto.attachment!.forEach(file=>formdata.append('images',file))
-    return this.http.post<BookingResponse>(`${API_ENDPOINTS.BOOKING.BASE}`,formdata)
+    return this.http.post<BookingResponse>(`${API_ENDPOINTS.BOOKING.BASE}`,dto)
     .pipe(catchError((err)=>{
       const normalized={
         message:err.message}
       return throwError(()=>normalized)
   }))
+  }
+
+  getClientBookings(status?:string){
+    return this.http.get<BookingResponse[]>(`${API_ENDPOINTS.BOOKING.CLIENT}`,{status})
+    .pipe(catchError((err)=>{
+      const normalized={message:err.message};
+      return throwError(()=>normalized)
+    }))
+  }
+
+  getProviderBookings(status?:string){
+    return this.http.get<BookingResponse[]>(`${API_ENDPOINTS.BOOKING.PROVIDER}`,{status})
+    .pipe(catchError((err)=>{
+      const normalized={message:err.message};
+      return throwError(()=>normalized)
+    }))
+  }
+
+  getBookingById(id:number){
+    return this.http.getOne<BookingResponse>(`${API_ENDPOINTS.BOOKING.BASE}`,id)
+    .pipe(catchError((err)=>{
+      const normalized={message:err.message};
+      return throwError(()=>normalized)
+    }))
+  }
+
+  acceptBooking(id:number){
+    return this.http.patch<BookingResponse>(`${API_ENDPOINTS.BOOKING.BASE}/${id}/accept`,{})
+  }
+
+  rejectBooking(id:number){
+    return this.http.patch<BookingResponse>(`${API_ENDPOINTS.BOOKING.BASE}/${id}/reject`,{})
+  }
+
+  cancelBooking(id:number){
+    return this.http.patch<BookingResponse>(`${API_ENDPOINTS.BOOKING.BASE}/${id}/cancel`,{})
   }
 
 

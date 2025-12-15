@@ -1,52 +1,52 @@
 import { inject, Injectable } from '@angular/core';
-import { Http } from '../../../../core/api/http';
 import { BookingResponse } from '../../../booking/models/booking-response.model';
-import { API_ENDPOINTS } from '../../../../core/api/endpoints';
-import { catchError, throwError } from 'rxjs';
+import { BookingService } from '../../../booking/services/booking.service';
+import { map } from 'rxjs';
 import { StatsBooking } from './statsbooking.model';
-import { ClientBookingDetails } from './clientbookingdetail.model';
 
 @Injectable({ providedIn: 'root' })
 export class ClientBookingService {
-  http = inject(Http);
+  bookingService = inject(BookingService);
 
-  getMyBookings() {
-    return this.http
-      .getAll<BookingResponse>(
-        `${API_ENDPOINTS.BOOKING.BASE}/${API_ENDPOINTS.BOOKING.ME}`
-      )
-      .pipe(
-        catchError((error) => {
-          const normalized = {
-            message: error.message,
-          };
-          return throwError(() => normalized);
-        })
-      );
+  getMyBookings(status?: string) {
+    return this.bookingService.getClientBookings(status);
   }
-  getMyStats() {
-    return this.http
-      .get<StatsBooking>(
-        `${API_ENDPOINTS.BOOKING.BASE}/${API_ENDPOINTS.BOOKING.ME}/${API_ENDPOINTS.BOOKING.STATS}`
-      )
-      .pipe(
-        catchError((error) => {
-          const normalized = {
-            message: error.message,
-          };
-          return throwError(() => normalized);
-        })
-      );
-  }
+
   getBookingsById(id: number) {
-    return this.http
-      .getOne<ClientBookingDetails>(`${API_ENDPOINTS.BOOKING.BASE}`, id)
-      .pipe(
-        catchError((error) => {
-          const normalized = { message: error.message };
-          return throwError(() => normalized);
-        })
-      );
+    return this.bookingService.getBookingById(id);
   }
-  //getMyRecentBookings()
+
+  getMyStats() {
+    return this.getMyBookings().pipe(
+      map((bookings: BookingResponse[]): StatsBooking => {
+        const baseStats: StatsBooking = {
+          totalRequests: bookings.length,
+          totalPending: 0,
+          totalAccepted: 0,
+          totalRejected: 0,
+          totalCancelled: 0,
+          totalDone: 0,
+        };
+
+        bookings.forEach((booking) => {
+          switch (booking.status) {
+            case 'PENDING':
+              baseStats.totalPending += 1;
+              break;
+            case 'ACCEPTED':
+              baseStats.totalAccepted += 1;
+              break;
+            case 'REJECTED':
+              baseStats.totalRejected += 1;
+              break;
+            case 'CANCELLED':
+              baseStats.totalCancelled += 1;
+              break;
+          }
+        });
+
+        return baseStats;
+      })
+    );
+  }
 }
