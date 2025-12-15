@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ClientBookingService } from '../../clientbooking.service';
 import { BookingResponse } from '../../../../../booking/models/booking-response.model';
 import { CommonModule, DatePipe } from '@angular/common';
+import { BookingService } from '../../../../../booking/services/booking.service';
 
 @Component({
   selector: 'bookings-list',
@@ -12,6 +13,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 export class BookingsListComponent implements OnInit{
  private readonly router=inject(Router)
   bookingsService=inject(ClientBookingService);
+  bookingService=inject(BookingService);
    listBookings:BookingResponse[]=[]
 
   ngOnInit(): void {
@@ -26,6 +28,13 @@ export class BookingsListComponent implements OnInit{
 
   toViewDetails(id: number|string) {
     this.router.navigate([`/clients/bookings/${id}`])
+  }
+
+  cancelBooking(id:number){
+    this.bookingService.cancelBooking(id).subscribe({
+      next:()=>this.ngOnInit(),
+      error:(err)=>console.log(err.message)
+    })
   }
 
 

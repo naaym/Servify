@@ -50,7 +50,7 @@ export class NewBookingComponent {
     date: this.form.value.date!,
     time: this.form.value.time!,
     description: this.form.value.description!,
-    attachment:this.selectedFiles,
+    attachments: this.selectedFiles.map(file=>file.name),
 
   };
     if(this.form.invalid){

@@ -1,1 +1,1 @@
-export  type Status= "ACCEPTED" |"PENDING" |"REJECTED"|"DONE"|"CANCELLED"
+export type Status = "ACCEPTED" | "PENDING" | "REJECTED" | "CANCELLED";

@@ -1,11 +1,10 @@
 export interface BookingRequest {
-
-  date:string;
-  time:string;
-  description:string;
-  attachment?:File[];
-  providerId:number;
-
+  date: string;
+  time: string;
+  description: string;
+  attachments?: string[];
+  providerId: number;
+  serviceCategory?: string;
 }
 
 

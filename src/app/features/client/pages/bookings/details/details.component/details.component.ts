@@ -1,9 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Attachment,DetailsRequest,TimelineStep } from '../../../../models/details.model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ClientBookingService } from '../../clientbooking.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ClientBookingDetails } from '../../clientbookingdetail.model';
+import { ActivatedRoute } from '@angular/router';
+import { BookingResponse } from '../../../../../booking/models/booking-response.model';
 
 @Component({
   selector: 'app-details.component',
@@ -14,7 +13,7 @@ import { ClientBookingDetails } from '../../clientbookingdetail.model';
 export class DetailsComponent implements OnInit {
   private readonly clientbookingservice=inject(ClientBookingService);
   private readonly route=inject(ActivatedRoute)
-  bookingDetails:ClientBookingDetails|null=null;
+  bookingDetails:BookingResponse|null=null;
   errorMessage:string="";
 
   ngOnInit(): void {
@@ -30,27 +29,15 @@ export class DetailsComponent implements OnInit {
 
 
     cancelRequest() {
-      console.log('Request cancelled');
+      if(this.bookingDetails){
+        this.clientbookingservice.bookingService.cancelBooking(this.bookingDetails.id).subscribe({
+          next:()=>this.loadDetails(this.bookingDetails!.id),
+          error:(err)=>this.errorMessage=err.message
+        })
+      }
     }
 
     contactProvider() {
       console.log('Contact provider');
     }
-    //-----------------------------------------------------------------
-
-    //  request = {
-    //   id: 1,
-    //   category: 'Plomberie – Fuite salle de bain',
-    //   date: '12 Jan 2025',
-    //   provider: 'Ahmed',
-    //   status: 'accepted',
-    //   description: 'Fuite sous le lavabo, urgence.',
-    //   timeline: [
-    //     { label: 'Demande créée', date: '12 Jan, 14:20' },
-    //     { label: 'Consultée par Ahmed', date: '12 Jan, 14:35' },
-    //     { label: 'Acceptée', date: '12 Jan, 14:40' }
-    //   ]
-    // };
-
-
 }

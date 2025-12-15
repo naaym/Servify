@@ -18,22 +18,22 @@
 
       <tbody class="divide-y divide-gray-800">
 
-        @for (r of listBookings; track r.bookingId) {
+        @for (r of listBookings; track r.id) {
         <tr class="hover:bg-[#1D1D26] transition">
 
           <!-- Service -->
           <td class="py-4 px-4 font-medium whitespace-nowrap">
-            {{ r.category }}
+            {{ r.serviceCategory || 'Service' }}
           </td>
 
           <!-- Provider -->
           <td class="px-4 whitespace-nowrap">
-            {{ r.providerName }}
+            {{ r.providerId }}
           </td>
 
           <!-- Date -->
           <td class="px-4 whitespace-nowrap">
-            {{ r.date|date:'dd MMM yyyy' }}
+            {{ r.date|date:'dd MMM yyyy' }} {{ r.time }}
           </td>
 
           <!-- Status -->
@@ -43,8 +43,7 @@
               [ngClass]="{
                 'bg-yellow-600/30 text-yellow-400': r.status === 'PENDING',
                 'bg-green-600/30 text-green-400': r.status === 'ACCEPTED',
-                'bg-blue-600/30 text-blue-400': r.status === 'DONE',
-                'bg-red-600/30 text-red-400': r.status === 'REJECTED'
+                'bg-red-600/30 text-red-400': r.status === 'REJECTED' || r.status === 'CANCELLED'
               }"
             >
               {{ r.status }}
@@ -53,9 +52,16 @@
 
           <!-- Button -->
           <td class="px-4 whitespace-nowrap">
-            <button class="text-purple-400 hover:underline text-xs sm:text-sm" (click)="toViewDetails(r.bookingId)">
-              View
-            </button>
+            <div class="flex gap-3 items-center">
+              <button class="text-purple-400 hover:underline text-xs sm:text-sm" (click)="toViewDetails(r.id)">
+                View
+              </button>
+              @if(r.status==='PENDING'){
+                <button class="text-red-400 hover:underline text-xs sm:text-sm" (click)="cancelBooking(r.id)">
+                  Cancel
+                </button>
+              }
+            </div>
           </td>
 
         </tr>
