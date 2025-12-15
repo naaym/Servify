@@ -12,7 +12,7 @@ export class ServiceModal {
   @Output() selectService = new EventEmitter<string>();
 
 
-  services = [
+  servicesCategory = [
     'x',
     'Développement_Web',
     'Développement_Mobile',

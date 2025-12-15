@@ -13,6 +13,6 @@ export class CityModal {
   @Output() citySelected = new EventEmitter<string>();
   @Output() retour = new EventEmitter();
 
-   cities = ['mannouba', 'France', 'Canada', 'Belgique', 'Suisse'];
+   governorates = ['mannouba', 'France', 'Canada', 'Belgique', 'Suisse'];
 
 }
