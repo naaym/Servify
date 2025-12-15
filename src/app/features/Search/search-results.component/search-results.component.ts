@@ -21,7 +21,7 @@ export class SearchResultsComponent implements OnInit {
   router = inject(Router);
 
   serviceCategory = '';
-  city = '';
+  governorate = '';
   delegation = '';
   minPrice?: number;
   maxPrice?: number;
@@ -33,16 +33,16 @@ export class SearchResultsComponent implements OnInit {
   total = 0;
 
   ngOnInit(): void {
-    this.serviceCategory =
-    this.activatedRoute.snapshot.queryParamMap.get('service') || '';
-    this.city = this.activatedRoute.snapshot.queryParamMap.get('city') || '';
+  this.activatedRoute.queryParams.subscribe(params => {
+    this.serviceCategory = params['serviceCategory'] ?? '';
+    this.governorate = params['governorate'] ?? '';
     this.fetchResults();
-  }
-
+  });
+}
   fetchResults() {
     const request: SearchProviderRequest = {
       serviceCategory: this.serviceCategory,
-      governorate: this.city,
+      governorate: this.governorate,
       minPrice: this.minPrice,
       maxPrice: this.maxPrice,
       minRating: this.minRating,
