@@ -1,172 +1,168 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ProviderCardComponent } from '../components/provider-card.component/provider-card.component';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { searchProviderService } from '../services/provider-search.service';
-import { SearchProviderRequest } from '../models/relsult-search.model';
-import { Provider } from '../models/provider.model';
+import { Subscription } from 'rxjs';
 import { Header } from '../../../shared/header/header';
+import { ProviderCardComponent } from '../components/provider-card.component/provider-card.component';
+import {
+  ProviderSortBy,
+  SearchProviderRequest,
+  SearchProviderResult,
+} from '../models/relsult-search.model';
+import { SearchProvidersService } from '../services/provider-search.service';
 
 @Component({
   selector: 'app-search-results.component',
-  imports: [ProviderCardComponent,Header],
+  imports: [CommonModule, ProviderCardComponent, Header],
   templateUrl: './search-results.component.html',
   styleUrl: './search-results.component.scss',
 })
-export class SearchResultsComponent implements OnInit {
-  activatedRoute=inject(ActivatedRoute)
-  search=inject(searchProviderService)
-  router=inject(Router);
-  // initialisation mte3 searchProviderRequest
-  totalPages:number=3
-  service:string=""
-  city:string="";
-  minPrice!: number ;
-  maxPrice!: number;
-  rate!: number;
-  sort!:string;
-  page:number=0;
-  size:number=10;
-  providerInfoResults!:Provider[]
-  //----------------------------------
-  ngOnInit(): void {
-    this.service=this.activatedRoute.snapshot.queryParamMap.get("service") || "";
-    this.city=this.activatedRoute.snapshot.queryParamMap.get("city") || "";
-    this.fetchResults();
+export class SearchResultsComponent implements OnInit, OnDestroy {
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly searchService = inject(SearchProvidersService);
+  private queryParamsSub?: Subscription;
 
-  }
+  filters: SearchProviderRequest = {
+    serviceCategory: '',
+    governorate: '',
+    page: 0,
+    size: 10,
+    sortBy: ProviderSortBy.RATING_DESC,
+  };
 
+  result?: SearchProviderResult;
+  isLoading = false;
 
-fetchResults(){
-      const request:SearchProviderRequest ={service : this.service,
-        governorate:this.city,
-        minPrice:this.minPrice,
-        maxPrice:this.maxPrice,
-        rate:this.rate,
-        skills:this.selectedSkills,
-        sort:this.sort,
-        page:this.page,
-        size:this.size}
-        console.log(request)
-         this.search.searchProvider(request).subscribe({next:(resp)=>{
-           this.providerInfoResults=resp.provider;
-           console.log(resp)}})
-      }
-
-
-      showProviderDetails(id:number){
-        this.router.navigate(["/search/providers",id])
-
-  }
-  newBooking(id:number){
-    this.router.navigate(["/providers",id,"booking"])
-  }
-  //extraction mte3 les donnes me template
-
-  onMinPriceChange(event:Event){
-    const input = event.target as HTMLInputElement
-    this.minPrice= +input.value
-
-    this.fetchResults()
-
-  }
-  onMaxPriceChange(event:Event){
-    const input = event.target as HTMLInputElement
-    this.maxPrice= +input.value
-    this.fetchResults()
-  }
-  onRatingChange(rate:string){
-    this.rate=+rate
-    this.fetchResults();
-  }
-  onSortChange(event:Event){
-    const input=event.target as HTMLInputElement
-    this.sort=input.value;
-    this.fetchResults()
-  }
-  resetFilters(){
-      this.sort = "rating,desc";
-  this.page = 0;
-  this.size = 10;
-
-  this.minPrice =0
-  this.maxPrice = 0
-  this.rate = 0
-  this.selectedSkills = [];
-  this.fetchResults()
-
-  }
-  //---------------------------
-  nextPage(){
-    this.page++
-    this.fetchResults()
-  }
-  prevPage(){
-    this.page--
-    this.fetchResults()
-
-  }
-  //-------------- pour les skills selectionness
-  selectedSkills:string[]=[];
-  disabledSkills:{[key:string]:boolean}={};
-  toggleSkill(skill:string){
-      this.disabledSkills[skill]=true
-    this.selectedSkills.push(skill);
-    this.fetchResults();
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // mock test
-  providers = [
-    {
-      providerId: 10,
-      name: 'iheb hkiri',
-      service: 'SWE',
-      governorate: 'Ariana',
-      delegation:'bir el bay',
-      reviewsCount: 20,
-      price: 50,
-      imageProviderUrl: 'kjsldfdf',
-      skills: ['pentesting'],
-      rate: 4.9,
-    },
-    {
-      providerId: 30,
-      name: 'fedi bazzi',
-      service: 'winou',
-      governorate: 'jandouba',
-      delegation:'bir el bay',
-      reviewsCount: 20,
-      price: 50,
-      imageProviderUrl: 'kjsldfdf',
-      skills: ['web dev '],
-      rate: 4.9,
-    },
+  readonly sortOptions: { label: string; value: ProviderSortBy }[] = [
+    { label: 'Meilleure note', value: ProviderSortBy.RATING_DESC },
+    { label: 'Moins cher', value: ProviderSortBy.PRICE_ASC },
+    { label: 'Plus cher', value: ProviderSortBy.PRICE_DESC },
+    { label: "Nombre d'avis", value: ProviderSortBy.REVIEWS_DESC },
   ];
+
+  ngOnInit(): void {
+    this.queryParamsSub = this.activatedRoute.queryParams.subscribe((params) => {
+      this.filters = {
+        serviceCategory: params['serviceCategory'] ?? '',
+        governorate: params['governorate'] ?? '',
+        minPrice: this.parseNumber(params['minPrice']),
+        maxPrice: this.parseNumber(params['maxPrice']),
+        minRating: this.parseNumber(params['minRating']),
+        page: this.parseNumber(params['page'], 0) ?? 0,
+        size: this.parseNumber(params['size'], 10) ?? 10,
+        sortBy: (params['sortBy'] as ProviderSortBy) || ProviderSortBy.RATING_DESC,
+      };
+      this.fetchResults();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.queryParamsSub?.unsubscribe();
+  }
+
+  fetchResults(): void {
+    if (!this.filters.serviceCategory || !this.filters.governorate) {
+      this.result = undefined;
+      return;
+    }
+    this.isLoading = true;
+    this.searchService.searchProvider(this.filters).subscribe({
+      next: (resp) => {
+        this.result = resp;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.result = undefined;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  updateQueryParams(partial: Partial<SearchProviderRequest>): void {
+    const updated: any = {
+      ...this.filters,
+      ...partial,
+    };
+
+    const queryParams: Record<string, any> = {};
+    Object.entries(updated).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        queryParams[key] = value;
+      }
+    });
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+    });
+  }
+
+  onServiceCategoryChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.updateQueryParams({ serviceCategory: value, page: 0 });
+  }
+
+  onGovernorateChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.updateQueryParams({ governorate: value, page: 0 });
+  }
+
+  onMinPriceChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.updateQueryParams({ minPrice: this.parseNumber(input.value), page: 0 });
+  }
+
+  onMaxPriceChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.updateQueryParams({ maxPrice: this.parseNumber(input.value), page: 0 });
+  }
+
+  onRatingChange(rate: string): void {
+    this.updateQueryParams({ minRating: this.parseNumber(rate), page: 0 });
+  }
+
+  onSortChange(event: Event): void {
+    const input = event.target as HTMLSelectElement;
+    this.updateQueryParams({ sortBy: input.value as ProviderSortBy });
+  }
+
+  resetFilters(): void {
+    this.updateQueryParams({
+      minPrice: undefined,
+      maxPrice: undefined,
+      minRating: undefined,
+      sortBy: ProviderSortBy.RATING_DESC,
+      page: 0,
+      size: 10,
+    });
+  }
+
+  nextPage(): void {
+    this.updateQueryParams({ page: (this.filters.page ?? 0) + 1 });
+  }
+
+  prevPage(): void {
+    const currentPage = this.filters.page ?? 0;
+    this.updateQueryParams({ page: Math.max(currentPage - 1, 0) });
+  }
+
+  showProviderDetails(id: number): void {
+    this.router.navigate(['/search/providers', id]);
+  }
+
+  newBooking(id: number): void {
+    this.router.navigate(['/providers', id, 'booking']);
+  }
+
+  private parseNumber(value: any, fallback?: number): number | undefined {
+    if (value === undefined || value === null || value === '') {
+      return fallback;
+    }
+    const parsed = Number(value);
+    if (Number.isNaN(parsed)) {
+      return fallback;
+    }
+    return parsed;
+  }
 }
-
-

@@ -1,6 +1,7 @@
 package com.servify.provider.mapper;
 
 import com.servify.provider.dto.ProviderRegistrationRequest;
+import com.servify.provider.dto.ProviderSearchResponse;
 import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
 import com.servify.user.enums.Role;
@@ -27,6 +28,21 @@ public  class ProviderMapperImpl implements ProviderMapper {
         providerEntity.setDiplomeName(request.getDiplome().getOriginalFilename());
 
         return providerEntity;
+    }
+
+    @Override
+    public ProviderSearchResponse toSearchResponse(ProviderEntity providerEntity) {
+        ProviderSearchResponse response = new ProviderSearchResponse();
+        response.setId(providerEntity.getUserId());
+        response.setName(providerEntity.getName());
+        response.setServiceCategory(providerEntity.getServiceCategory());
+        response.setGovernorate(providerEntity.getGovernorate());
+        response.setDelegation(providerEntity.getDelegation());
+        response.setHourlyRate(providerEntity.getHourlyRate());
+        response.setAverageRating(providerEntity.getAverageRating());
+        response.setReviewsCount(providerEntity.getReviewsCount());
+        response.setStatus(providerEntity.getStatus());
+        return response;
     }
 
 }

@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
   },
 
   PROVIDER: {
-    BASE:"register",
+    BASE: 'providers',
     REGISTER: 'providers/register',
     SEARCH: 'providers/search',
     BY_ID: (id: number) => `providers/${id}`,

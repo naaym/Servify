@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -46,6 +47,23 @@ public  abstract class UserEntity implements UserDetails {
   @PrePersist
   void onCreate() {
     this.createdAt = Instant.now();
+  }
+
+  @PrePersist
+  @PreUpdate
+  void normalizeUserFields() {
+    if (governorate != null) {
+      governorate = governorate.trim().toLowerCase(Locale.ROOT);
+    }
+    if (name != null) {
+      name = name.trim();
+    }
+    if (email != null) {
+      email = email.trim();
+    }
+    if (phone != null) {
+      phone = phone.trim();
+    }
   }
 
 

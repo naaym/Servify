@@ -3,11 +3,12 @@ package com.servify.provider.repository;
 import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ProviderRepository extends JpaRepository<ProviderEntity, Long> {
+public interface ProviderRepository extends JpaRepository<ProviderEntity, Long>, JpaSpecificationExecutor<ProviderEntity> {
     Optional<ProviderEntity> findByEmail(String email);
     boolean existsByEmail(String email);
 
