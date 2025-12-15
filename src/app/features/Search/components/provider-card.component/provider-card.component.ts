@@ -9,15 +9,23 @@ import { Router } from '@angular/router';
   styleUrl: './provider-card.component.scss',
 })
 export class ProviderCardComponent {
-  @Input({required:true}) provider!:Provider;
+  @Input({ required: true }) provider!: Provider;
   @Output() toProviderDetails = new EventEmitter<number>();
   @Output() toReserver = new EventEmitter<number>();
 
-  onClickVoirProfil(id:number){
+  get providerInitials(): string {
+    const trimmed = this.provider?.name?.trim();
+    if (!trimmed) {
+      return '??';
+    }
+    return trimmed.slice(0, 2).toUpperCase();
+  }
+
+  onClickVoirProfil(id: number) {
     this.toProviderDetails.emit(id);
   }
-  onClickReserver(id:number){
-    this.toReserver.emit(id)
+  onClickReserver(id: number) {
+    this.toReserver.emit(id);
   }
 
 

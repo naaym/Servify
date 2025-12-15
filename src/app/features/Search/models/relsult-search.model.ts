@@ -32,6 +32,6 @@ export interface SearchProviderRequest {
   maxPrice?: number;
   minRating?: number;
   sortBy?: ProviderSortBy;
-  page?: number;
-  size?: number;
+  page: number;
+  size: number;
 }

@@ -15,7 +15,7 @@
         </span>
       </p>
       <p class="text-gray-500" *ngIf="result">
-        {{ result.totalElements }} prestataires · Page {{ (result.page ?? 0) + 1 }} / {{ result.totalPages }}
+        {{ result.totalElements }} prestataires · Page {{ result.page + 1 }} / {{ result.totalPages }}
       </p>
     </header>
 
@@ -138,19 +138,19 @@
           <div class="flex items-center justify-center gap-6 my-6 mx-auto" *ngIf="result.totalPages > 0">
             <button
               (click)="prevPage()"
-              [disabled]="(filters.page ?? 0) === 0"
+              [disabled]="filters.page === 0"
               class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <span class="text-xl">&#8249;</span>
             </button>
 
             <span class="text-lg font-medium text-gray-700">
-              {{ (result.page ?? 0) + 1 }} / {{ result.totalPages }}
+              {{ result.page + 1 }} / {{ result.totalPages }}
             </span>
 
             <button
               (click)="nextPage()"
-              [disabled]="(result.page ?? 0) + 1 === result.totalPages"
+              [disabled]="result.page + 1 === result.totalPages"
               class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <span class="text-xl">&#8250;</span>

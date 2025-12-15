@@ -139,12 +139,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   }
 
   nextPage(): void {
-    this.updateQueryParams({ page: (this.filters.page ?? 0) + 1 });
+    this.updateQueryParams({ page: this.filters.page + 1 });
   }
 
   prevPage(): void {
-    const currentPage = this.filters.page ?? 0;
-    this.updateQueryParams({ page: Math.max(currentPage - 1, 0) });
+    this.updateQueryParams({ page: Math.max(this.filters.page - 1, 0) });
   }
 
   showProviderDetails(id: number): void {
