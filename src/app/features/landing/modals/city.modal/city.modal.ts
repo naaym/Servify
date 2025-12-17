@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { SearchOptionsService } from '../../../Search/services/search-options.service';
+import { OptionItem } from '../../../../shared/models/option-item';
 
 @Component({
   selector: 'app-city',
@@ -10,18 +11,18 @@ import { SearchOptionsService } from '../../../Search/services/search-options.se
 })
 export class CityModal implements OnChanges, OnDestroy {
    @Input({required:true}) open:boolean=false;
-   @Input({required:true}) serviceName!:string|null;
+   @Input({required:true}) selectedService!:OptionItem|null;
   @Output() close = new EventEmitter();
-  @Output() citySelected = new EventEmitter<string>();
+  @Output() citySelected = new EventEmitter<OptionItem>();
   @Output() retour = new EventEmitter();
 
-   governorates: string[] = [];
+   governorates: OptionItem[] = [];
    isLoading = false;
    private readonly destroy$ = new Subject<void>();
    private readonly searchOptionsService = inject(SearchOptionsService);
 
    ngOnChanges(changes: SimpleChanges): void {
-     if ((changes['open']?.currentValue === true) || (changes['serviceName'] && this.open)) {
+     if ((changes['open']?.currentValue === true) || (changes['selectedService'] && this.open)) {
        this.loadGovernorates();
      }
    }
@@ -34,7 +35,7 @@ export class CityModal implements OnChanges, OnDestroy {
    private loadGovernorates(): void {
      this.isLoading = true;
      this.searchOptionsService
-       .getAvailableGovernorates(this.serviceName ?? undefined)
+       .getAvailableGovernorates(this.selectedService?.id ?? undefined)
        .pipe(
          takeUntil(this.destroy$),
          finalize(() => (this.isLoading = false))

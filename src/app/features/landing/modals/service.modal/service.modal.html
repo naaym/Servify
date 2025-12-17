@@ -14,12 +14,13 @@
       <p class="text-center text-gray-500">Aucun service disponible</p>
     } @else {
       <ul class="space-y-3">
-        @for( service of services ; track service ){
+        @for( service of services ; track service.id ){
           <li>
             <button
             (click)="selectService.emit(service)"
-            class="w-full text-left p-3 rounded-xl border hover:bg-purple-100">
-            {{ service }}
+            class="w-full flex justify-between items-center text-left p-3 rounded-xl border hover:bg-purple-100">
+            <span>{{ service.name }}</span>
+            <span class="text-xs text-gray-500">{{ service.count }} prestataires</span>
           </button>
         </li>
       }

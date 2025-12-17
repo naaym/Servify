@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { SearchOptionsService } from '../../../Search/services/search-options.service';
+import { OptionItem } from '../../../../shared/models/option-item';
 
 @Component({
   selector: 'app-service',
@@ -11,9 +12,9 @@ import { SearchOptionsService } from '../../../Search/services/search-options.se
 export class ServiceModal implements OnChanges, OnDestroy {
   @Input({required:true}) open:boolean=false;
   @Output() close = new EventEmitter();
-  @Output() selectService = new EventEmitter<string>();
+  @Output() selectService = new EventEmitter<OptionItem>();
 
-  services: string[] = [];
+  services: OptionItem[] = [];
   isLoading = false;
   private readonly destroy$ = new Subject<void>();
   private readonly searchOptionsService = inject(SearchOptionsService);

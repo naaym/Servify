@@ -46,7 +46,7 @@
 
 <app-city [open]="isCityModalOpen"
  (close)="toggleCityModal(false)"
- (citySelected)="onCityChosen($event)"  [serviceName]="nameService"
+ (citySelected)="onCityChosen($event)"  [selectedService]="selectedService"
  (retour)="backToServiceModal()" ></app-city>
 
 

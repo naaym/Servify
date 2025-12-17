@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { LucideAngularModule, SearchIcon } from 'lucide-angular';
+import { OptionItem } from '../../../shared/models/option-item';
+import { SearchStateService } from '../../../shared/services/serachstate.service';
 import { ServiceModal } from '../modals/service.modal/service.modal';
 import { CityModal } from '../modals/city.modal/city.modal';
-import { Router } from '@angular/router';
-import { SearchStateService } from '../../../shared/services/serachstate.service';
 
 @Component({
   selector: 'app-hero-section',
@@ -12,50 +13,51 @@ import { SearchStateService } from '../../../shared/services/serachstate.service
   styleUrl: './hero-section.scss',
 })
 export class HeroSection {
-  router = inject(Router);
+  private readonly router = inject(Router);
+  private readonly searchStateService = inject(SearchStateService);
   icon = SearchIcon;
 
-  isServiceModalOpen: boolean = false;
-  isCityModalOpen: boolean = false;
-  nameService!: string;
+  isServiceModalOpen = false;
+  isCityModalOpen = false;
+  selectedService: OptionItem | null = null;
 
-
-  backToServiceModal(){
+  backToServiceModal() {
     this.toggleCityModal(false);
-    this.toggleServiceModal(true)
+    this.toggleServiceModal(true);
   }
 
-
-  toggleServiceModal(open:boolean){
-    this.isServiceModalOpen=open;
+  toggleServiceModal(open: boolean) {
+    this.isServiceModalOpen = open;
   }
-  toggleCityModal(open:boolean){
-    this.isCityModalOpen=open;
+  toggleCityModal(open: boolean) {
+    this.isCityModalOpen = open;
   }
 
-  onServiceChosen(service: string) {
-    this.nameService = service?.trim();
-    this.toggleServiceModal(false)
+  onServiceChosen(service: OptionItem) {
+    this.selectedService = service;
+    this.toggleServiceModal(false);
     this.toggleCityModal(true);
   }
 
+  onCityChosen(city: OptionItem) {
+    const queryParams: Record<string, string | number> = {};
 
-  onCityChosen(city: string) {
-     const queryParams: Record<string, string> = {};
-     const normalizedService = this.nameService?.trim();
-     const normalizedCity = city?.trim();
+    if (this.selectedService?.id) {
+      queryParams['serviceId'] = this.selectedService.id;
+    }
+    if (city?.id) {
+      queryParams['governorateId'] = city.id;
+    }
 
-     if (normalizedService) {
-       queryParams['serviceCategory'] = normalizedService;
-     }
-     if (normalizedCity) {
-       queryParams['governorate'] = normalizedCity;
-     }
+    this.searchStateService.setSearchContext(
+      city?.name ?? '',
+      this.selectedService?.name ?? '',
+      city?.id,
+      this.selectedService?.id
+    );
 
-     this.router.navigate(['/search'], {
-      queryParams
-    })
-
-
+    this.router.navigate(['/search'], {
+      queryParams,
+    });
   }
 }
