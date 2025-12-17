@@ -5,6 +5,15 @@
     <!-- TITLE -->
     <h2 class="text-2xl font-bold mb-4">Create a New Booking</h2>
 
+    <div class="space-y-2">
+      <label class="text-sm text-gray-300">ServiceCategory</label>
+      <input
+        type="texte"
+        class="w-full bg-[#0D0D11] border border-gray-700 focus:border-purple-500 rounded-xl px-4 py-3 outline-none transition"
+        [value]="serviceCategory"
+        disabled
+      />
+    </div>
     <!-- DATE -->
     <div class="space-y-2">
       <label class="text-sm text-gray-300">Date</label>

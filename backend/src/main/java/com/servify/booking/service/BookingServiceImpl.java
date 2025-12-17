@@ -11,6 +11,7 @@ import com.servify.booking.repository.BookingRepository;
 import com.servify.shared.exception.ResourceNotFoundException;
 import com.servify.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -45,6 +47,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public List<BookingResponse> getClientBookings(BookingStatus status) {
+      log.info("getClientBookings: status={}", status);
+
         Long clientId = getCurrentUserId();
         List<BookingEntity> bookings = status == null
             ? bookingRepository.findAllByClientId(clientId)

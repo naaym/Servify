@@ -1,4 +1,5 @@
 import { inject, Injectable } from "@angular/core";
+import { HttpParams } from '@angular/common/http';
 import { Http } from "../../../core/api/http";
 import { API_ENDPOINTS } from "../../../core/api/endpoints";
 import { catchError, throwError } from "rxjs";
@@ -18,8 +19,13 @@ export class BookingService {
   }))
   }
 
-  getClientBookings(status?:string){
-    return this.http.get<BookingResponse[]>(`${API_ENDPOINTS.BOOKING.CLIENT}`,{status})
+  getClientBookings(status?: string | null) {
+  let params = new HttpParams();
+
+  if (status) {
+    params = params.set('status', status);
+  }
+    return this.http.get<BookingResponse[]>(`${API_ENDPOINTS.BOOKING.CLIENT}`,{params})
     .pipe(catchError((err)=>{
       const normalized={message:err.message};
       return throwError(()=>normalized)

@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         this.errorMessage = error?.message ?? 'Unable to load stats';
-        this.showmessage.showError(this.errorMessage);
+        this.showmessage.show('error',this.errorMessage);
       }
     })
   }

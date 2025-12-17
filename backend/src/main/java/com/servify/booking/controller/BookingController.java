@@ -50,28 +50,28 @@ public class BookingController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLIENT','PROVIDER')")
-    public ResponseEntity<BookingResponse> getBooking(@PathVariable Long id) {
+    public ResponseEntity<BookingResponse> getBooking(@PathVariable (name = "id") Long id) {
         BookingResponse response = bookingService.getBooking(id);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/accept")
     @PreAuthorize("hasRole('PROVIDER')")
-    public ResponseEntity<BookingResponse> accept(@PathVariable Long id) {
+    public ResponseEntity<BookingResponse> accept(@PathVariable(name = "id") Long id) {
         BookingResponse response = bookingService.accept(id);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/reject")
     @PreAuthorize("hasRole('PROVIDER')")
-    public ResponseEntity<BookingResponse> reject(@PathVariable Long id) {
+    public ResponseEntity<BookingResponse> reject(@PathVariable(name = "id") Long id) {
         BookingResponse response = bookingService.reject(id);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/cancel")
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<BookingResponse> cancel(@PathVariable Long id) {
+    public ResponseEntity<BookingResponse> cancel(@PathVariable (name = "id") Long id) {
         BookingResponse response = bookingService.cancel(id);
         return ResponseEntity.ok(response);
     }

@@ -57,7 +57,6 @@ public class ProviderController {
         request.setCin(cin);
         request.setCv(cv);
         request.setDiplome(diplome);
-
         ProviderRegistrationResponse response = providerService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

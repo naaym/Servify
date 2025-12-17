@@ -1,16 +1,6 @@
 package com.servify.booking.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -52,6 +42,7 @@ public class BookingEntity {
     private BookingStatus status;
 
     @ElementCollection
+    @CollectionTable(name = "booking_attachments",joinColumns = @JoinColumn( name = "booking_id"))
     private List<String> attachments = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)

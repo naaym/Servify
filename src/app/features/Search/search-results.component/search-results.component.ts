@@ -60,7 +60,9 @@ export class SearchResultsComponent implements OnInit {
   }
 
   newBooking(id: number) {
-    this.router.navigate(['/providers', id, 'booking']);
+    this.router.navigate(['/providers', id, 'booking'],{
+        state:{serviceCategory:this.serviceCategory}
+      }); 
   }
 
   onMinPriceChange(value: number | string | null | undefined) {

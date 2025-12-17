@@ -1,4 +1,4 @@
-import { Component, inject} from '@angular/core';
+import { Component, inject, OnInit} from '@angular/core';
 import { AttachmentService } from '../../services/attachment.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { BookingRequest } from '../../models/booking-request.model';
   templateUrl: './new-booking.component.html',
   styleUrl: './new-booking.component.scss',
 })
-export class NewBookingComponent {
+export class NewBookingComponent implements OnInit{
 
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
@@ -20,10 +20,17 @@ export class NewBookingComponent {
   private readonly bookingService = inject(BookingService);
   private readonly attachmentService = inject(AttachmentService);
 
-
+ngOnInit(): void {
+    if (this.data && this.data.serviceCategory) {
+      this.serviceCategory = this.data.serviceCategory;
+    }
+}
   preview: string[] = [];
   selectedFiles: File[] = [];
-  providerId=Number(this.route.snapshot.queryParamMap.get('id'))
+  providerId=Number(this.route.snapshot.paramMap.get('id'))
+  serviceCategory:string='';
+  data = history.state;
+
 
   onUploadAttachments(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -45,12 +52,14 @@ export class NewBookingComponent {
 
 
   onSubmit(){
+
     const dto: BookingRequest = {
     providerId: this.providerId,
     date: this.form.value.date!,
     time: this.form.value.time!,
     description: this.form.value.description!,
     attachments: this.selectedFiles.map(file=>file.name),
+    serviceCategory:this.serviceCategory,
 
   };
     if(this.form.invalid){
@@ -61,7 +70,7 @@ export class NewBookingComponent {
     this.bookingService.createBooking(dto).subscribe({
       next:(res)=>{
       console.log("booking created",res)
-      this.router.navigate(['/clients/dashboard'])
+      this.router.navigate(['/clients/dashboard'],)
     },
 
     })
