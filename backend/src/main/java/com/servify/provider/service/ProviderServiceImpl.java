@@ -1,20 +1,25 @@
 package com.servify.provider.service;
 
+import com.servify.provider.dto.ProviderProfileResponse;
 import com.servify.provider.dto.ProviderRegistrationRequest;
 import com.servify.provider.dto.ProviderRegistrationResponse;
 import com.servify.provider.dto.ProviderSearchRequest;
 import com.servify.provider.dto.ProviderSearchResult;
 import com.servify.provider.dto.ProviderSearchResponse;
+import com.servify.provider.dto.UpdateProviderProfileRequest;
 
 import com.servify.provider.exceptions.EmailDuplicationException;
 import com.servify.provider.mapper.ProviderMapper;
 import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
 import com.servify.provider.repository.ProviderRepository;
+import com.servify.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Comparator;
 import java.util.List;
@@ -65,6 +70,55 @@ public class ProviderServiceImpl implements ProviderService{
         return new ProviderSearchResult(results, results.size());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ProviderProfileResponse getCurrentProfile() {
+        ProviderEntity provider = getCurrentProvider();
+        return providerMapper.toProfileResponse(provider);
+    }
+
+    @Override
+    public ProviderProfileResponse updateProfile(UpdateProviderProfileRequest request) {
+        ProviderEntity provider = getCurrentProvider();
+
+        if (request.getName() != null) {
+            provider.setName(request.getName());
+        }
+        if (request.getPhone() != null) {
+            provider.setPhone(request.getPhone());
+        }
+        if (request.getGovernorate() != null) {
+            provider.setGovernorate(request.getGovernorate());
+        }
+        if (request.getDelegation() != null) {
+            provider.setDelegation(request.getDelegation());
+        }
+        if (request.getAge() != null) {
+            provider.setAge(request.getAge());
+        }
+        if (request.getServiceCategory() != null) {
+            provider.setServiceCategory(request.getServiceCategory());
+        }
+        if (request.getBasePrice() != null) {
+            provider.setBasePrice(request.getBasePrice());
+        }
+        if (request.getDescription() != null) {
+            provider.setDescription(request.getDescription());
+        }
+
+        ProviderEntity saved = providerRepository.save(provider);
+        return providerMapper.toProfileResponse(saved);
+    }
+
+    @Override
+    public ProviderProfileResponse updateProfilePhoto(MultipartFile photo) {
+        ProviderEntity provider = getCurrentProvider();
+        String imageUrl = storageFilesService.storeImage(photo, "servify/providers/profile");
+        provider.setProfileImageUrl(imageUrl);
+        ProviderEntity saved = providerRepository.save(provider);
+        return providerMapper.toProfileResponse(saved);
+    }
+
     private void sortProviders(List<ProviderEntity> providers, String sortBy) {
         if (providers == null || providers.isEmpty()) {
             return;
@@ -90,10 +144,16 @@ public class ProviderServiceImpl implements ProviderService{
     }
 
     private void ensureEmailIsAvailable(String email) {
-        if(providerRepository.existsByEmail(email)){
-          throw new EmailDuplicationException("Email "+email+" exists" );
+        if (providerRepository.existsByEmail(email)) {
+            throw new EmailDuplicationException("Email " + email + " exists");
+        }
+    }
 
-    }}
+    private ProviderEntity getCurrentProvider() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return providerRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Provider not found"));
+    }
 
 
 }

@@ -40,6 +40,8 @@ public  abstract class UserEntity implements UserDetails {
   @Column(nullable = false)
   private String governorate;
 
+  private String profileImageUrl;
+
   @Column(nullable = false, updatable = false)
   private Instant createdAt;
 

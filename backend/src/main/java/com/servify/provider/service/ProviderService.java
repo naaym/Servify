@@ -4,9 +4,18 @@ import com.servify.provider.dto.ProviderRegistrationRequest;
 import com.servify.provider.dto.ProviderRegistrationResponse;
 import com.servify.provider.dto.ProviderSearchRequest;
 import com.servify.provider.dto.ProviderSearchResult;
+import com.servify.provider.dto.ProviderProfileResponse;
+import com.servify.provider.dto.UpdateProviderProfileRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProviderService {
   ProviderRegistrationResponse register(ProviderRegistrationRequest request);
 
   ProviderSearchResult searchProviders(ProviderSearchRequest request);
+
+  ProviderProfileResponse getCurrentProfile();
+
+  ProviderProfileResponse updateProfile(UpdateProviderProfileRequest request);
+
+  ProviderProfileResponse updateProfilePhoto(MultipartFile photo);
 }

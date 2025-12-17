@@ -1,5 +1,6 @@
 package com.servify.provider.mapper;
 
+import com.servify.provider.dto.ProviderProfileResponse;
 import com.servify.provider.dto.ProviderRegistrationRequest;
 import com.servify.provider.dto.ProviderSearchResponse;
 import com.servify.provider.model.ProviderEntity;
@@ -46,7 +47,25 @@ public  class ProviderMapperImpl implements ProviderMapper {
         response.setRating(entity.getRating());
         response.setReviewCount(entity.getReviewCount());
         response.setDescription(entity.getDescription());
+        response.setImageProviderUrl(entity.getProfileImageUrl());
         return response;
+    }
+
+    @Override
+    public ProviderProfileResponse toProfileResponse(ProviderEntity entity) {
+        return ProviderProfileResponse.builder()
+                .id(entity.getUserId())
+                .name(entity.getName())
+                .email(entity.getEmail())
+                .phone(entity.getPhone())
+                .governorate(entity.getGovernorate())
+                .delegation(entity.getDelegation())
+                .age(entity.getAge())
+                .serviceCategory(entity.getServiceCategory())
+                .basePrice(entity.getBasePrice())
+                .description(entity.getDescription())
+                .profileImageUrl(entity.getProfileImageUrl())
+                .build();
     }
 
 }

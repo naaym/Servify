@@ -1,0 +1,103 @@
+<div class="min-h-screen bg-[#0D0D11] text-white">
+  <div class="max-w-5xl mx-auto px-6 py-10 space-y-6">
+
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-purple-200">Prestataire</p>
+      <h1 class="text-3xl font-bold mt-2">Mon profil</h1>
+      <p class="text-gray-400 mt-2">Gérez vos informations publiques et votre photo de profil.</p>
+    </div>
+
+    <div *ngIf="error" class="bg-red-900/40 border border-red-500/40 text-red-100 px-4 py-3 rounded-xl">
+      {{ error }}
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="bg-[#16161C] border border-white/5 rounded-2xl p-5 flex flex-col gap-4">
+        <h2 class="text-lg font-semibold">Photo de profil</h2>
+        <div class="flex flex-col items-center gap-4">
+          <div class="w-32 h-32 rounded-2xl overflow-hidden border border-white/10 bg-[#0D0D11] flex items-center justify-center">
+            <img *ngIf="pendingPhotoPreview; else savedPhoto" [src]="pendingPhotoPreview" class="w-full h-full object-cover" alt="Prévisualisation" />
+            <ng-template #savedPhoto>
+              <img *ngIf="profileImageUrl; else placeholder" [src]="profileImageUrl" class="w-full h-full object-cover" alt="Profil" />
+            </ng-template>
+            <ng-template #placeholder>
+              <div class="text-gray-500">Aucune photo</div>
+            </ng-template>
+          </div>
+
+          <div class="w-full space-y-3">
+            <label class="block text-sm text-gray-300">Choisir une image (JPG ou PNG)</label>
+            <input type="file" accept="image/*" (change)="onPhotoSelected($event)" class="w-full text-sm text-gray-200" />
+            <button
+              class="w-full bg-purple-600 hover:bg-purple-700 transition rounded-xl py-2 font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+              [disabled]="photoSaving || !pendingPhotoFile"
+              (click)="uploadPhoto()"
+            >
+              {{ photoSaving ? 'Chargement...' : 'Mettre à jour la photo' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <form class="md:col-span-2 bg-[#16161C] border border-white/5 rounded-2xl p-6 space-y-5" (ngSubmit)="onSubmit()" [formGroup]="profileForm">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Informations générales</h2>
+          <span *ngIf="loading" class="text-sm text-gray-400">Chargement...</span>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <label class="block text-sm text-gray-300 space-y-2">
+            <span>Nom complet</span>
+            <input formControlName="name" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500" />
+          </label>
+
+            <label class="block text-sm text-gray-300 space-y-2">
+              <span>Email</span>
+              <input formControlName="email" [disabled]="true" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 opacity-70" />
+            </label>
+
+          <label class="block text-sm text-gray-300 space-y-2">
+            <span>Téléphone</span>
+            <input formControlName="phone" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500" />
+          </label>
+
+          <label class="block text-sm text-gray-300 space-y-2">
+            <span>Gouvernorat</span>
+            <input formControlName="governorate" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500" />
+          </label>
+
+          <label class="block text-sm text-gray-300 space-y-2">
+            <span>Délégation</span>
+            <input formControlName="delegation" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500" />
+          </label>
+
+          <label class="block text-sm text-gray-300 space-y-2">
+            <span>Âge</span>
+            <input type="number" formControlName="age" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500" />
+          </label>
+
+          <label class="block text-sm text-gray-300 space-y-2">
+            <span>Catégorie de service</span>
+            <input formControlName="serviceCategory" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500" />
+          </label>
+
+          <label class="block text-sm text-gray-300 space-y-2">
+            <span>Tarif de base</span>
+            <input type="number" formControlName="basePrice" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500" />
+          </label>
+        </div>
+
+        <label class="block text-sm text-gray-300 space-y-2">
+          <span>Description</span>
+          <textarea formControlName="description" rows="4" class="w-full bg-[#0D0D11] border border-white/10 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500"></textarea>
+        </label>
+
+        <div class="flex gap-3 justify-end">
+          <button type="submit" class="bg-purple-600 hover:bg-purple-700 transition rounded-xl px-6 py-2 font-semibold disabled:opacity-60 disabled:cursor-not-allowed" [disabled]="saving || loading">
+            {{ saving ? 'Sauvegarde...' : 'Enregistrer les modifications' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
