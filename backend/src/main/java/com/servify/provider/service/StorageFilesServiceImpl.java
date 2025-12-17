@@ -15,17 +15,26 @@ public class StorageFilesServiceImpl implements StorageFilesService {
 
   @Override
   public String store(MultipartFile file, String folder) {
+    validatePdf(file);
+    return uploadFile(file, folder, "raw");
+  }
 
-    validateFile(file);
+  @Override
+  public String storeImage(MultipartFile file, String folder) {
+    validateImage(file);
+    return uploadFile(file, folder, "image");
+  }
 
+  private String uploadFile(MultipartFile file, String folder, String resourceType) {
     try {
       Map<String, Object> options = new HashMap<>();
       options.put("folder", folder);
-      options.put("resource_type", "raw");
+      options.put("resource_type", resourceType);
       options.put("access_mode", "public");
+
       Map<?, ?> uploadResult = cloudinary.uploader().upload(
-        file.getBytes(),
-        options
+              file.getBytes(),
+              options
       );
 
       return uploadResult.get("secure_url").toString();
@@ -35,13 +44,31 @@ public class StorageFilesServiceImpl implements StorageFilesService {
     }
   }
 
-  private void validateFile(MultipartFile file) {
-    String contentType = file.getContentType();
-    if (!contentType.equals("application/pdf")) {
-      throw new IllegalArgumentException(" Only PDF files supported ");
-    }
+  private void validatePdf(MultipartFile file) {
     if (file == null || file.isEmpty()) {
       throw new IllegalArgumentException("File is empty");
+    }
+
+    String contentType = file.getContentType();
+    if (!"application/pdf".equals(contentType)) {
+      throw new IllegalArgumentException(" Only PDF files supported ");
+    }
+
+    long maxSize = 5 * 1024 * 1024;
+    if (file.getSize() > maxSize) {
+      throw new IllegalArgumentException("File too large");
+    }
+  }
+
+  private void validateImage(MultipartFile file) {
+    if (file == null || file.isEmpty()) {
+      throw new IllegalArgumentException("File is empty");
+    }
+
+    String contentType = file.getContentType();
+    if (contentType == null ||
+            (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
+      throw new IllegalArgumentException("Only JPEG or PNG images supported");
     }
 
     long maxSize = 5 * 1024 * 1024;
