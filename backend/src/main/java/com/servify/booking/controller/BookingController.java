@@ -56,13 +56,13 @@ public class BookingController {
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d+}")
     public ResponseEntity<BookingDetailsResponse> getBookingDetails(@PathVariable("id") Long bookingId) {
         return ResponseEntity.ok(bookingService.getBookingDetails(bookingId));
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/{id:\\d+}/status")
     public ResponseEntity<BookingDetailsResponse> cancelBooking(
             @PathVariable("id") Long bookingId,
             @RequestBody BookingStatusUpdateRequest request
@@ -81,13 +81,13 @@ public class BookingController {
     }
 
     @PreAuthorize("hasRole('PROVIDER')")
-    @GetMapping("/provider/{id}")
+    @GetMapping("/provider/{id:\\d+}")
     public ResponseEntity<BookingDetailsResponse> getProviderBookingDetails(@PathVariable("id") Long bookingId) {
         return ResponseEntity.ok(bookingService.getProviderBookingDetails(bookingId));
     }
 
     @PreAuthorize("hasRole('PROVIDER')")
-    @PatchMapping("/provider/{id}/status")
+    @PatchMapping("/provider/{id:\\d+}/status")
     public ResponseEntity<BookingDetailsResponse> updateStatusAsProvider(
             @PathVariable("id") Long bookingId,
             @RequestBody BookingStatusUpdateRequest request
