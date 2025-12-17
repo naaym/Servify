@@ -21,4 +21,10 @@ export class ProviderBookingService {
       { status }
     );
   }
+
+  getBookingDetails(bookingId: number) {
+    return this.http.get<ClientBookingDetails>(
+      `${API_ENDPOINTS.BOOKING.BASE}/${API_ENDPOINTS.BOOKING.PROVIDER}/${bookingId}`
+    );
+  }
 }
