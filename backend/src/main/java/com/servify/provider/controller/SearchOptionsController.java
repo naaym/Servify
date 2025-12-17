@@ -23,7 +23,7 @@ public class SearchOptionsController {
     }
 
     @GetMapping("/governorates")
-    public ResponseEntity<List<String>> getGovernorates(@RequestParam(required = false) String serviceCategory) {
+    public ResponseEntity<List<String>> getGovernorates(@RequestParam(name = "serviceCategory", required = false) String serviceCategory) {
         return ResponseEntity.ok(searchOptionsService.getAvailableGovernorates(serviceCategory));
     }
 }
