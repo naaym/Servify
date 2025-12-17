@@ -7,6 +7,7 @@ import { ProviderApplication, ProviderStatus } from '../../models/provider-appli
 import { AdminDashboardStats } from '../../models/admin-dashboard-stats.model';
 import { TokenService } from '../../../../core/services/token.service';
 import { AdminRequest, AdminResponse } from '../../models/admin.model';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -200,4 +201,6 @@ export class DashboardAdmin implements OnInit {
       },
     });
   }
+
+
 }

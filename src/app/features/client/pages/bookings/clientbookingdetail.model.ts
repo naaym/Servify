@@ -9,7 +9,8 @@ export interface ClientBookingDetails{
   date:number;
   updatedAt:number;
   providerInfo:providerBookingDetails;
-  serviceName:string;
+  clientName?:string;
+  clientPhone?:string;
   serviceGategory:string;
   attachments?:metadata[];
 

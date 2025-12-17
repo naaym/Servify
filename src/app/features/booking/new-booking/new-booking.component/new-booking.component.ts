@@ -23,7 +23,7 @@ export class NewBookingComponent {
 
   preview: string[] = [];
   selectedFiles: File[] = [];
-  providerId=Number(this.route.snapshot.queryParamMap.get('id'))
+  providerId=Number(this.route.snapshot.paramMap.get('id'))
 
   onUploadAttachments(event: Event) {
     const input = event.target as HTMLInputElement;

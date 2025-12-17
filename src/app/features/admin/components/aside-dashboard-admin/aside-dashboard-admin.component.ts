@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { AuthService } from '../../../auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'aside-dashboard-admin',
@@ -8,6 +10,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './aside-dashboard-admin.scss',
 })
 export class AsideDashboardAdmin {
+    private readonly authService = inject(AuthService);
+    private readonly router = inject(Router);
+
+
   @Input() activeSection: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins' = 'dashboard';
   @Input() isSuperAdmin = false;
   @Output() sectionChange = new EventEmitter<'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins'>();
@@ -16,5 +22,9 @@ export class AsideDashboardAdmin {
     if (section !== this.activeSection) {
       this.sectionChange.emit(section);
     }
+  }
+  logout(){
+    this.authService.logout();
+    this.router.navigate(['/'])
   }
 }
