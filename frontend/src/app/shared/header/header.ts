@@ -69,4 +69,15 @@ export class Header implements OnInit {
       });
     }
   }
+  toProfile(){
+    let roles=this.tokenService.getRoles()[0];
+    roles=roles.toLowerCase()+"s";
+    this.router.navigate([`/${roles}/dashboard`])
+  }
+  showAdminAvater():boolean{
+   const rolez = this.tokenService.getRoles();
+  return rolez.includes('ADMIN') || rolez.includes('SUPER_ADMIN');
 }
+  }
+
+
