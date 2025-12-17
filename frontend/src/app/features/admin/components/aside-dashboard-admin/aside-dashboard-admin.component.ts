@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'aside-dashboard-admin',
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule],
   templateUrl: './aside-dashboard-admin.html',
   styleUrl: './aside-dashboard-admin.scss',
 })
