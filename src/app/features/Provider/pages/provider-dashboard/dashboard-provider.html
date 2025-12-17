@@ -118,9 +118,12 @@
                   </span>
                 </td>
                 <td class="py-3">
-                  <button class="text-indigo-400 hover:underline" (click)="viewDetails(booking.bookingId)">
+                  <a
+                    class="text-indigo-400 hover:underline"
+                    [routerLink]="['/providers/bookings', booking.bookingId]"
+                  >
                     Voir détails
-                  </button>
+                  </a>
                 </td>
                 <td class="flex flex-wrap gap-3 py-3">
                   @if(booking.status === 'PENDING'){
@@ -145,56 +148,6 @@
         <div class="text-gray-400">Chargement des demandes...</div>
       }
 
-    </div>
-
-    <!-- DETAILS PANE -->
-    <div class="bg-[#16161C] p-6 rounded-2xl shadow" *ngIf="selectedBooking || detailsLoading">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold">Détails de la réservation</h2>
-        @if(selectedBooking){
-          <span class="px-3 py-1 rounded-lg bg-gray-700 text-gray-200">#{{ selectedBooking.bookingId }}</span>
-        }
-      </div>
-
-      @if(detailsLoading){
-        <div class="text-gray-400">Chargement des détails...</div>
-      } @else if(selectedBooking) {
-        <div class="space-y-3 text-sm">
-          <div class="flex flex-wrap gap-2">
-            <span class="text-gray-400">Client:</span>
-            <span class="font-semibold">{{ selectedBooking.clientName }}</span>
-            <span class="text-gray-500">•</span>
-            <span class="text-gray-300">{{ selectedBooking.clientPhone }}</span>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            <span class="text-gray-400">Service:</span>
-            <span class="font-semibold">{{ selectedBooking.serviceName }}</span>
-            <span class="text-gray-500">({{ selectedBooking.serviceGategory }})</span>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            <span class="text-gray-400">Date:</span>
-            <span class="font-semibold">{{ selectedBooking.date | date: 'dd MMM yyyy' }}</span>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <span class="text-gray-400">Description</span>
-            <p class="bg-[#1D1D26] p-3 rounded-xl text-gray-200">{{ selectedBooking.description || 'Aucune description fournie.' }}</p>
-          </div>
-
-          <div class="flex flex-col gap-1" *ngIf="selectedBooking.attachments?.length">
-            <span class="text-gray-400">Pièces jointes</span>
-            <div class="flex flex-wrap gap-3">
-              @for(file of selectedBooking.attachments; track file.name){
-                <a class="text-indigo-400 hover:underline" [href]="file.url" target="_blank" rel="noopener">
-                  {{ file.name }}
-                </a>
-              }
-            </div>
-          </div>
-        </div>
-      }
     </div>
 
   </div>

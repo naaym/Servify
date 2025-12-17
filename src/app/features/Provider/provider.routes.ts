@@ -5,6 +5,7 @@ import { Provider } from "./pages/signup/provider/provider";
 import { AccountReview } from "./pages/account-review/account-review.component";
 import { AccountRejction } from "./pages/account-rejction/account-rejction.component";
 import { ProviderDashboard } from "./pages/provider-dashboard/dashboard-provider.component";
+import { ProviderBookingDetailsComponent } from "./pages/booking-details/provider-booking-details.component";
 
 
 
@@ -13,6 +14,7 @@ export const PROVIDER_ROUTES :Routes= [
   {path :'account-review',component:AccountReview},
   {path :'account-rejection',component:AccountRejction},
   {path :'dashboard',component:ProviderDashboard},
+  {path :'bookings/:bookingId',component:ProviderBookingDetailsComponent},
 
   {
     path: ':id',
