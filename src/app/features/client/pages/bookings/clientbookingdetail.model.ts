@@ -11,7 +11,6 @@ export interface ClientBookingDetails{
   providerInfo:providerBookingDetails;
   clientName?:string;
   clientPhone?:string;
-  serviceName:string;
   serviceGategory:string;
   attachments?:metadata[];
 

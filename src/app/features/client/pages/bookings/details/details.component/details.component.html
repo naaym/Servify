@@ -18,9 +18,8 @@
 
       <div>
         <h2 class="text-2xl font-bold text-indigo-700">{{ bookingDetails?.serviceGategory }}</h2>
-        <h6 class="text-sm  text-black-700">{{ bookingDetails?.serviceName }}</h6>
         <p class="text-gray-600 mt-1">
-          📅 <strong>{{ bookingDetails?.date |date : "dd MMM yyyy" }}</strong>
+           <strong>{{ bookingDetails?.date |date : "dd MMM yyyy" }}</strong>
         </p>
       </div>
 
@@ -58,7 +57,7 @@
           <p class="text-lg font-bold text-gray-900">
             {{bookingDetails?.providerInfo?.providerName }}
           </p>
-          <p class="text-gray-600">📞 {{ bookingDetails?.providerInfo?.providerPhone }}</p>
+          <p class="text-gray-600"> {{ bookingDetails?.providerInfo?.providerPhone }}</p>
           <p>
           <p class="text-gray-600"> {{ bookingDetails?.providerInfo?.providerLocalisation }}</p>
           <p>
@@ -101,43 +100,14 @@
               target="_blank"
               class="flex items-center gap-3 bg-gray-50 border rounded-xl px-4 py-3 hover:bg-gray-100 transition"
             >
-              <span class="text-2xl">📄</span>
+              <span class="text-2xl"></span>
               <span class="font-medium text-gray-800">{{ att.name }}</span>
             </a>
           }
         </div>
       </div>
     }
-    <!-- hedhi se3a lezem partie el provider tkoun 7adhra , table booking-events -->
-    <!-- TIMELINE -->
-    <!-- <div>
-      <h3 class="text-xl font-semibold text-gray-800 mb-3">📌 Timeline</h3>
-
-      <div class="space-y-4">
-
-        @for (step of bookingDetails.timeline; track step.date) {
-          <div class="flex gap-4 items-start"> -->
-
-            <!-- Bullet -->
-            <!-- <div class="w-4 h-4 mt-1 rounded-full bg-indigo-600"></div> -->
-
-            <!-- Content -->
-            <!-- <div class="bg-gray-50 p-4 rounded-xl border flex-1">
-              <p class="font-semibold text-gray-900">
-                {{ step.label }}
-              </p>
-              <p class="text-gray-500 text-sm mt-1">
-                {{ step.date }}
-              </p>
-            </div>
-
-          </div>
-        }
-
-      </div>
-    </div> -->
-
-    <!-- BUTTONS -->
+   
     <div class="flex flex-wrap gap-4 pt-6 border-t">
 
       @if(bookingDetails?.status!=='DONE' && bookingDetails?.status!=='CANCELLED'){

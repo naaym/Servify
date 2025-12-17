@@ -213,7 +213,6 @@ public class BookingServiceImpl implements BookingService {
                 .description(booking.getDescription())
                 .date(toEpochMilli(booking))
                 .updatedAt(booking.getUpdatedAt().toEpochMilli())
-                .serviceName(booking.getProvider().getDescription() != null ? booking.getProvider().getDescription() : booking.getProvider().getServiceCategory())
                 .serviceGategory(booking.getProvider().getServiceCategory())
                 .providerInfo(mapToProviderDetails(booking.getProvider()))
                 .clientName(booking.getClient().getName())

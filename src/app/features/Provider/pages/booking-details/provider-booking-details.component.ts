@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Status } from '../../../booking/models/status.model';
-import { ClientBookingDetails } from '../../client/pages/bookings/clientbookingdetail.model';
+import { ClientBookingDetails } from '../../../client/pages/bookings/clientbookingdetail.model';
 import { ProviderBookingService } from '../../services/provider-booking.service';
 
 @Component({

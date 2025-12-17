@@ -2,7 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { Http } from '../../../core/api/http';
 import { API_ENDPOINTS } from '../../../core/api/endpoints';
-import { UserService } from '../../../core/services/user.service';
 import { TokenService } from '../../../core/services/token.service';
 import { LoginRequest, LoginResponse } from '../models/login.models';
 
@@ -11,7 +10,6 @@ import { LoginRequest, LoginResponse } from '../models/login.models';
 })
 export class AuthService {
   tokenservice = inject(TokenService);
-  userservice = inject(UserService);
   http = inject(Http);
 
   login(credentials: LoginRequest) {
@@ -21,6 +19,9 @@ export class AuthService {
         this.tokenservice.saveUserId(res.id);
       }),
     );
+  }
+  logout(){
+    this.tokenservice.clearTokens();
   }
 
   getIdFromLocalStorage() {

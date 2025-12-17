@@ -10,6 +10,7 @@ import com.servify.admin.repository.AdminRepository;
 import com.servify.client.repository.ClientRepository;
 import com.servify.provider.model.ProviderEntity;
 import com.servify.provider.model.ProviderStatus;
+import com.servify.provider.repository.ServiceCategoryRepository;
 import com.servify.provider.service.SearchOptionsService;
 import com.servify.provider.repository.ProviderRepository;
 import com.servify.shared.exception.ResourceNotFoundException;
@@ -39,6 +40,7 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final AdminMapper adminMapper;
     private final SearchOptionsService searchOptionsService;
+    private final ServiceCategoryRepository  serviceCategoryRepository;
 
     @Override
     public AdminResponse create(AdminRequest request) {
@@ -68,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    //lezem updateRequest mech admin
+
     public AdminResponse update(Long id, AdminRequest request) {
         AdminEntity admin = adminRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException("Admin not found: " + id));
@@ -96,11 +98,12 @@ public class AdminServiceImpl implements AdminService {
         long clientCount = clientRepository.count();
         long adminCount = adminRepository.count();
         long userCount = userRepository.count();
+        long serviceCount =serviceCategoryRepository.count();
 
         stats.setProviders(providerCount);
         stats.setClients(clientCount);
         stats.setAdmins(adminCount);
-        stats.setServices(0L);
+        stats.setServices(serviceCount);
         stats.setUsers(userCount);
         stats.setPendingProviders(providerRepository.countByStatus(ProviderStatus.PENDING));
         stats.setAcceptedProviders(providerRepository.countByStatus(ProviderStatus.ACCEPTED));

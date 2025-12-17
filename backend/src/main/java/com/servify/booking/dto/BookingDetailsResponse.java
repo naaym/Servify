@@ -18,7 +18,6 @@ public class BookingDetailsResponse {
     private ProviderDetails providerInfo;
     private String clientName;
     private String clientPhone;
-    private String serviceName;
     private String serviceGategory;
     private List<FileMetadata> attachments;
 }
