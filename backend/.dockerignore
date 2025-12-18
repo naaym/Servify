@@ -1,0 +1,15 @@
+# Maven / build outputs
+.target
+*/target
+
+# IDE files
+.idea
+.vscode
+*.iml
+
+# Git
+.git
+.gitignore
+
+# OS files
+.DS_Store

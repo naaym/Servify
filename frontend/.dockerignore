@@ -1,0 +1,16 @@
+# Node dependencies and build outputs
+node_modules
+.dist
+dist
+
+# IDE files
+.idea
+.vscode
+*.iml
+
+# Git
+.git
+.gitignore
+
+# OS files
+.DS_Store
