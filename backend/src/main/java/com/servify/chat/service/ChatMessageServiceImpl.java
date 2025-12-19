@@ -2,6 +2,7 @@ package com.servify.chat.service;
 
 import com.servify.booking.model.BookingEntity;
 import com.servify.booking.repository.BookingRepository;
+import com.servify.chat.dto.ChatConversationResponse;
 import com.servify.chat.dto.ChatMessageResponse;
 import com.servify.chat.model.ChatMessageEntity;
 import com.servify.chat.repository.ChatMessageRepository;
@@ -17,7 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -59,20 +63,43 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public List<ChatMessageResponse> getRecentMessages(String requesterEmail) {
+    public List<ChatConversationResponse> getConversations(String requesterEmail) {
         UserEntity requester = findUserByEmail(requesterEmail);
         List<ChatMessageEntity> messages;
         if (requester.getRole() == Role.CLIENT) {
-            messages = chatMessageRepository.findTop10ByBookingClientUserIdOrderByCreatedAtDesc(requester.getUserId());
+            messages = chatMessageRepository.findByBookingClientUserIdOrderByCreatedAtDesc(requester.getUserId());
         } else if (requester.getRole() == Role.PROVIDER) {
-            messages = chatMessageRepository.findTop10ByBookingProviderUserIdOrderByCreatedAtDesc(requester.getUserId());
+            messages = chatMessageRepository.findByBookingProviderUserIdOrderByCreatedAtDesc(requester.getUserId());
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized for messages");
         }
 
-        return messages.stream()
-                .map(this::mapToResponse)
-                .toList();
+        Map<Long, ChatConversationResponse> conversations = new LinkedHashMap<>();
+        for (ChatMessageEntity message : messages) {
+            Long bookingId = message.getBooking().getBookingId();
+            if (conversations.containsKey(bookingId)) {
+                continue;
+            }
+            BookingEntity booking = message.getBooking();
+            String participantName;
+            String participantImageUrl;
+            if (requester.getRole() == Role.CLIENT) {
+                participantName = booking.getProvider().getName();
+                participantImageUrl = booking.getProvider().getProfileImageUrl();
+            } else {
+                participantName = booking.getClient().getName();
+                participantImageUrl = booking.getClient().getProfileImageUrl();
+            }
+            conversations.put(bookingId, ChatConversationResponse.builder()
+                    .bookingId(bookingId)
+                    .participantName(participantName)
+                    .participantImageUrl(participantImageUrl)
+                    .lastMessage(message.getContent())
+                    .lastMessageAt(message.getCreatedAt().toEpochMilli())
+                    .build());
+        }
+
+        return new ArrayList<>(conversations.values());
     }
 
     private UserEntity findUserByEmail(String email) {

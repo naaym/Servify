@@ -5,8 +5,6 @@ import { ProviderBookingService } from '../../services/provider-booking.service'
 import { ProviderBookingResponse } from '../../models/provider-booking.model';
 import { Status } from '../../../booking/models/status.model';
 import { AuthService } from '../../../auth/services/auth.service';
-import { ChatService } from '../../../booking/services/chat.service';
-import { ChatMessage } from '../../../booking/models/chat-message.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,18 +15,14 @@ import { ChatMessage } from '../../../booking/models/chat-message.model';
 export class ProviderDashboard implements OnInit {
      private readonly authService = inject(AuthService);
     private readonly router = inject(Router);
-    private readonly chatService = inject(ChatService);
   bookings: ProviderBookingResponse[] = [];
   errorMessage = '';
   loading = false;
-  recentMessages: ChatMessage[] = [];
-  messagesError = '';
 
   constructor(private readonly bookingService: ProviderBookingService) {}
 
   ngOnInit(): void {
     this.loadBookings();
-    this.loadRecentMessages();
   }
 
   loadBookings() {
@@ -42,13 +36,6 @@ export class ProviderDashboard implements OnInit {
         this.errorMessage = err.message;
         this.loading = false;
       },
-    });
-  }
-
-  loadRecentMessages() {
-    this.chatService.getRecentMessages().subscribe({
-      next: (messages) => (this.recentMessages = messages),
-      error: (err) => (this.messagesError = err.message),
     });
   }
 

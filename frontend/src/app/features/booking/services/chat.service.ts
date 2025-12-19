@@ -5,7 +5,7 @@ import { Subject, Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../../core/api/endpoints';
 import { Http } from '../../../core/api/http';
 import { TokenService } from '../../../core/services/token.service';
-import { ChatMessage, ChatMessageRequest } from '../models/chat-message.model';
+import { ChatConversation, ChatMessage, ChatMessageRequest } from '../models/chat-message.model';
 
 @Injectable({
   providedIn: 'root',
@@ -65,7 +65,7 @@ export class ChatService {
     return this.http.get<ChatMessage[]>(API_ENDPOINTS.BOOKING.MESSAGES(bookingId));
   }
 
-  getRecentMessages() {
-    return this.http.get<ChatMessage[]>(API_ENDPOINTS.MESSAGES.RECENT);
+  getConversations() {
+    return this.http.get<ChatConversation[]>(API_ENDPOINTS.MESSAGES.CONVERSATIONS);
   }
 }

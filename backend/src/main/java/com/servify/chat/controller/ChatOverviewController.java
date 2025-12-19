@@ -1,6 +1,6 @@
 package com.servify.chat.controller;
 
-import com.servify.chat.dto.ChatMessageResponse;
+import com.servify.chat.dto.ChatConversationResponse;
 import com.servify.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,9 @@ public class ChatOverviewController {
     private final ChatMessageService chatMessageService;
 
     @PreAuthorize("hasAnyRole('CLIENT','PROVIDER')")
-    @GetMapping("/recent")
-    public ResponseEntity<List<ChatMessageResponse>> getRecentMessages() {
+    @GetMapping("/conversations")
+    public ResponseEntity<List<ChatConversationResponse>> getConversations() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(chatMessageService.getRecentMessages(email));
+        return ResponseEntity.ok(chatMessageService.getConversations(email));
     }
 }

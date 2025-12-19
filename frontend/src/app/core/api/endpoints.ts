@@ -2,7 +2,7 @@ export const API_ENDPOINTS = {
   BASE: 'http://localhost:8084/api',
   WS_BASE: 'http://localhost:8084/ws',
   MESSAGES: {
-    RECENT: 'messages/recent',
+    CONVERSATIONS: 'messages/conversations',
   },
   AUTH: {
     LOGIN: 'auth/login',
