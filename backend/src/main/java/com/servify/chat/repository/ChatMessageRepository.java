@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, Long> {
     List<ChatMessageEntity> findByBookingBookingIdOrderByCreatedAtAsc(Long bookingId);
+
+    List<ChatMessageEntity> findTop10ByBookingClientUserIdOrderByCreatedAtDesc(Long clientId);
+
+    List<ChatMessageEntity> findTop10ByBookingProviderUserIdOrderByCreatedAtDesc(Long providerId);
 }

@@ -11,6 +11,8 @@ public class ChatMessageResponse {
     private Long bookingId;
     private Long senderId;
     private Role senderRole;
+    private String senderName;
+    private String senderImageUrl;
     private String content;
     private Long createdAt;
 }

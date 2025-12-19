@@ -3,6 +3,8 @@ export interface ChatMessage {
   bookingId: number;
   senderId: number;
   senderRole: string;
+  senderName: string;
+  senderImageUrl: string | null;
   content: string;
   createdAt: number;
 }

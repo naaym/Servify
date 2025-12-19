@@ -7,4 +7,5 @@ import java.util.List;
 public interface ChatMessageService {
     ChatMessageResponse sendMessage(Long bookingId, String content, String senderEmail);
     List<ChatMessageResponse> getMessages(Long bookingId, String requesterEmail);
+    List<ChatMessageResponse> getRecentMessages(String requesterEmail);
 }

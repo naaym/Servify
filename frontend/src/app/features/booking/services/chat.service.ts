@@ -64,4 +64,8 @@ export class ChatService {
   getHistory(bookingId: number) {
     return this.http.get<ChatMessage[]>(API_ENDPOINTS.BOOKING.MESSAGES(bookingId));
   }
+
+  getRecentMessages() {
+    return this.http.get<ChatMessage[]>(API_ENDPOINTS.MESSAGES.RECENT);
+  }
 }

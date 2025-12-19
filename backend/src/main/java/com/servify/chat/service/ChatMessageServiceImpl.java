@@ -58,6 +58,23 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .toList();
     }
 
+    @Override
+    public List<ChatMessageResponse> getRecentMessages(String requesterEmail) {
+        UserEntity requester = findUserByEmail(requesterEmail);
+        List<ChatMessageEntity> messages;
+        if (requester.getRole() == Role.CLIENT) {
+            messages = chatMessageRepository.findTop10ByBookingClientUserIdOrderByCreatedAtDesc(requester.getUserId());
+        } else if (requester.getRole() == Role.PROVIDER) {
+            messages = chatMessageRepository.findTop10ByBookingProviderUserIdOrderByCreatedAtDesc(requester.getUserId());
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized for messages");
+        }
+
+        return messages.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     private UserEntity findUserByEmail(String email) {
         return clientRepository.findByEmail(email)
                 .<UserEntity>map(client -> client)
@@ -74,11 +91,24 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     private ChatMessageResponse mapToResponse(ChatMessageEntity message) {
+        BookingEntity booking = message.getBooking();
+        String senderName;
+        String senderImageUrl;
+        if (message.getSenderRole() == Role.CLIENT) {
+            senderName = booking.getClient().getName();
+            senderImageUrl = booking.getClient().getProfileImageUrl();
+        } else {
+            senderName = booking.getProvider().getName();
+            senderImageUrl = booking.getProvider().getProfileImageUrl();
+        }
+
         return ChatMessageResponse.builder()
                 .messageId(message.getMessageId())
                 .bookingId(message.getBooking().getBookingId())
                 .senderId(message.getSenderId())
                 .senderRole(message.getSenderRole())
+                .senderName(senderName)
+                .senderImageUrl(senderImageUrl)
                 .content(message.getContent())
                 .createdAt(message.getCreatedAt().toEpochMilli())
                 .build();
