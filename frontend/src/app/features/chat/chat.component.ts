@@ -2,17 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { ChatConversation } from '../../models/chat-message.model';
-import { ChatNotificationService } from '../../services/chat-notification.service';
-import { ChatService } from '../../services/chat.service';
-import { BookingChatComponent } from '../../components/booking-chat/booking-chat.component';
+import { ChatConversation } from '../chat/models/chat-message.model';
+import { ChatNotificationService } from '../chat/services/chat-notification.service';
+import { ChatService } from '../chat/services/chat.service';
+import { BookingChatComponent } from '../chat/components/booking-chat/booking-chat.component';
 
 @Component({
   selector: 'app-booking-chats',
   standalone: true,
   imports: [CommonModule, FormsModule, BookingChatComponent],
-  templateUrl: './chats.component.html',
-  styleUrl: './chats.component.scss',
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.scss',
 })
 export class BookingChatsComponent implements OnInit, OnDestroy {
   conversations: ChatConversation[] = [];

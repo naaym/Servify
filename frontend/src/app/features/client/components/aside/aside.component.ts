@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
-import { ChatNotificationService } from '../../../booking/services/chat-notification.service';
+import { ChatNotificationService } from '../../../chat/services/chat-notification.service';
 
 @Component({
   selector: 'app-aside',

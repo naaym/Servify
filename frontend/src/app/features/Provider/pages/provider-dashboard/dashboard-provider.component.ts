@@ -5,7 +5,7 @@ import { ProviderBookingService } from '../../services/provider-booking.service'
 import { ProviderBookingResponse } from '../../models/provider-booking.model';
 import { Status } from '../../../booking/models/status.model';
 import { AuthService } from '../../../auth/services/auth.service';
-import { ChatNotificationService } from '../../../booking/services/chat-notification.service';
+import { ChatNotificationService } from '../../../chat/services/chat-notification.service';
 
 @Component({
   selector: 'app-dashboard',
