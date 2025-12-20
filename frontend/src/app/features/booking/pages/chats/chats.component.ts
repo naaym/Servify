@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ChatConversation } from '../../models/chat-message.model';
+import { ChatNotificationService } from '../../services/chat-notification.service';
 import { ChatService } from '../../services/chat.service';
 import { BookingChatComponent } from '../../components/booking-chat/booking-chat.component';
 
@@ -24,10 +25,12 @@ export class BookingChatsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly chatService: ChatService,
+    private readonly chatNotificationService: ChatNotificationService,
   ) {}
 
   ngOnInit(): void {
     this.loadConversations();
+    this.chatNotificationService.markAllAsRead();
   }
 
 
@@ -60,6 +63,7 @@ export class BookingChatsComponent implements OnInit, OnDestroy {
 
   selectConversation(conversation: ChatConversation) {
     this.selectedConversation = conversation;
+    this.chatNotificationService.markConversationAsRead(conversation.bookingId);
   }
 
   applyFilter() {
