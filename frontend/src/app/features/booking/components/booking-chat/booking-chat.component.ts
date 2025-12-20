@@ -1,9 +1,21 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { TokenService } from '../../../../core/services/token.service';
-import { ChatMessage, ChatMessageRequest } from '../../models/chat-message.model';
+import {
+  ChatMessage,
+  ChatMessageRequest,
+} from '../../models/chat-message.model';
 import { ChatService } from '../../services/chat.service';
 
 @Component({
@@ -13,47 +25,82 @@ import { ChatService } from '../../services/chat.service';
   templateUrl: './booking-chat.component.html',
   styleUrl: './booking-chat.component.scss',
 })
-export class BookingChatComponent implements OnInit, OnDestroy {
+export class BookingChatComponent implements OnInit, OnChanges, OnDestroy {
   @Input({ required: true }) bookingId!: number;
   @Input() theme: 'light' | 'dark' = 'light';
-  @ViewChild('messagesContainer') messagesContainer?: ElementRef<HTMLDivElement>;
+  @ViewChild('messagesContainer')
+  messagesContainer?: ElementRef<HTMLDivElement>;
 
   messages: ChatMessage[] = [];
   newMessage = '';
   loading = false;
   errorMessage = '';
-  private readonly destroy$ = new Subject<void>();
+
+  private destroy$ = new Subject<void>();
   private readonly currentUserId: number | null;
+  private initialized = false;
 
   constructor(
     private readonly chatService: ChatService,
-    private readonly tokenService: TokenService,
+    private readonly tokenService: TokenService
   ) {
     const storedId = this.tokenService.getUserId();
     this.currentUserId = storedId ? Number(storedId) : null;
   }
 
   ngOnInit(): void {
+    this.initialized = true;
+
     if (!this.bookingId) {
       this.errorMessage = 'Réservation invalide.';
       return;
     }
 
+    this.startConversation(this.bookingId);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.initialized) return; // ignore avant ngOnInit
+
+    if (changes['bookingId']) {
+      const newId = changes['bookingId'].currentValue as number;
+      const oldId = changes['bookingId'].previousValue as number;
+
+      if (!newId || newId === oldId) return;
+
+      this.startConversation(newId);
+    }
+  }
+
+  private startConversation(bookingId: number) {
+    this.destroy$.next();
+    this.chatService.disconnect();
+
+    this.messages = [];
+    this.newMessage = '';
+    this.errorMessage = '';
     this.loading = true;
-    this.chatService.getHistory(this.bookingId).subscribe({
-      next: (messages) => {
-        this.messages = messages;
-        this.loading = false;
-        this.scrollToBottom();
-      },
-      error: (err) => {
-        this.errorMessage = err.message;
-        this.loading = false;
-      },
-    });
+
+    this.destroy$.complete();
+    this.destroy$ = new Subject<void>();
 
     this.chatService
-      .connect(this.bookingId)
+      .getHistory(bookingId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (messages) => {
+          this.messages = messages;
+          this.loading = false;
+          this.scrollToBottom();
+        },
+        error: (err) => {
+          this.errorMessage = err?.message || 'Erreur chargement historique.';
+          this.loading = false;
+        },
+      });
+
+    this.chatService
+      .connect(bookingId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (message) => {
@@ -61,7 +108,7 @@ export class BookingChatComponent implements OnInit, OnDestroy {
           this.scrollToBottom();
         },
         error: (err) => {
-          this.errorMessage = err.message;
+          this.errorMessage = err?.message || 'Erreur websocket.';
         },
       });
   }
@@ -74,19 +121,21 @@ export class BookingChatComponent implements OnInit, OnDestroy {
 
   sendMessage() {
     const trimmed = this.newMessage.trim();
-    if (!trimmed) {
-      return;
-    }
+    if (!trimmed) return;
+
     const request: ChatMessageRequest = {
       bookingId: this.bookingId,
       content: trimmed,
     };
+
     this.chatService.sendMessage(request);
     this.newMessage = '';
   }
 
   isOwnMessage(message: ChatMessage): boolean {
-    return this.currentUserId !== null && message.senderId === this.currentUserId;
+    return (
+      this.currentUserId !== null && message.senderId === this.currentUserId
+    );
   }
 
   private scrollToBottom() {

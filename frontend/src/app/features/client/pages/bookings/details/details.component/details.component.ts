@@ -8,7 +8,7 @@ import { BookingChatComponent } from '../../../../../booking/components/booking-
 
 @Component({
   selector: 'app-details.component',
-  imports: [CommonModule, DatePipe, BookingChatComponent],
+  imports: [CommonModule, DatePipe],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss',
 })

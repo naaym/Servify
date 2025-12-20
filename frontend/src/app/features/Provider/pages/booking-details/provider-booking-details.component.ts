@@ -9,7 +9,7 @@ import { BookingChatComponent } from '../../../booking/components/booking-chat/b
 @Component({
   selector: 'app-provider-booking-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, DatePipe, BookingChatComponent],
+  imports: [CommonModule, RouterModule, DatePipe],
   templateUrl: './provider-booking-details.component.html',
   styleUrl: './provider-booking-details.component.scss',
 })

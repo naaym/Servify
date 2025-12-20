@@ -30,6 +30,7 @@ export class BookingChatsComponent implements OnInit, OnDestroy {
     this.loadConversations();
   }
 
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -44,8 +45,11 @@ export class BookingChatsComponent implements OnInit, OnDestroy {
         next: (conversations) => {
           this.conversations = conversations;
           this.applyFilter();
-          this.selectedConversation = this.filteredConversations[0] || null;
-          this.loading = false;
+          if (!this.selectedConversation && this.filteredConversations.length) {
+    this.selectedConversation = this.filteredConversations[0];
+  }
+
+  this.loading = false;
         },
         error: (err) => {
           this.errorMessage = err.message;
