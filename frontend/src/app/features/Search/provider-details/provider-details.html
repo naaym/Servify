@@ -40,5 +40,17 @@
       <h2>À propos</h2>
       <p>{{ provider.description || 'Ce provider n’a pas encore ajouté de description.' }}</p>
     </div>
+
+    <div class="provider-details__section" *ngIf="provider.workImages && provider.workImages.length">
+      <h2>Réalisations</h2>
+      <div class="provider-details__gallery">
+        <img
+          *ngFor="let image of provider.workImages"
+          [src]="image"
+          class="provider-details__gallery-image"
+          alt="Réalisation du provider"
+        />
+      </div>
+    </div>
   </div>
 </section>
