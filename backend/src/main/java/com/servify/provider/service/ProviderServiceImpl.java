@@ -216,13 +216,14 @@ public class ProviderServiceImpl implements ProviderService{
     }
 
     private ReviewItemResponse toReviewItemResponse(ReviewEntity review) {
+       double ratings= roundRating((review.getPolitenessRating()
+                + review.getQualityRating()
+                + review.getPunctualityRating()) / 3.0);
         return ReviewItemResponse.builder()
                 .id(review.getId())
                 .clientName(review.getClient().getName())
                 .clientProfileImageUrl(review.getClient().getProfileImageUrl())
-                .overallRating(roundRating((review.getPolitenessRating()
-                        + review.getQualityRating()
-                        + review.getPunctualityRating()) / 3.0))
+                .overallRating(toInt(ratings))
                 .politenessRating(review.getPolitenessRating())
                 .qualityRating(review.getQualityRating())
                 .punctualityRating(review.getPunctualityRating())
@@ -231,11 +232,12 @@ public class ProviderServiceImpl implements ProviderService{
                 .build();
     }
 
-    private Double roundRating(Double rating) {
-        if (rating == null) {
-            return 0.0;
-        }
-        return Math.round(rating * 100.0) / 100.0;
+    private Double roundRating(double rating) {
+
+        return Math.round (rating * 100.0) / 100.0;
+    }
+    private  int toInt(double ratings) {
+        return (int) ratings ;
     }
 
 

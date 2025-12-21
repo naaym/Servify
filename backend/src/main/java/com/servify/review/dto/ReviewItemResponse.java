@@ -9,7 +9,7 @@ public class ReviewItemResponse {
     private Long id;
     private String clientName;
     private String clientProfileImageUrl;
-    private Double overallRating;
+    private double overallRating;
     private Integer politenessRating;
     private Integer qualityRating;
     private Integer punctualityRating;
