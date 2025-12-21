@@ -5,7 +5,7 @@ import { ClientBookingService } from '../../clientbooking.service';
 import { ActivatedRoute } from '@angular/router';
 import { ClientBookingDetails } from '../../clientbookingdetail.model';
 import { Status } from '../../../../../booking/models/status.model';
-import { ReviewRequest } from '../review-request.model';
+import { ReviewRequest } from '../../review-request.model';
 
 @Component({
   selector: 'app-details.component',
@@ -62,7 +62,7 @@ export class DetailsComponent implements OnInit {
         next: () => {
           this.isSubmittingReview = false;
           this.reviewSuccess = 'Merci ! Votre avis a bien été envoyé.';
-          this.bookingDetails = { ...this.bookingDetails, reviewSubmitted: true };
+          this.bookingDetails = { ...this.bookingDetails!, reviewSubmitted: true };
         },
         error: (err) => {
           this.isSubmittingReview = false;
