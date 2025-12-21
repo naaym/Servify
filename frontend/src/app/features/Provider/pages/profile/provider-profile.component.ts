@@ -149,10 +149,10 @@ export class ProviderProfileComponent implements OnInit {
       return;
     }
 
-    this.pendingWorkImageFiles = Array.from(input.files);
-    this.pendingWorkImagePreviews = [];
+    const newFiles = Array.from(input.files);
+    this.pendingWorkImageFiles = [...this.pendingWorkImageFiles, ...newFiles];
 
-    this.pendingWorkImageFiles.forEach((file) => {
+    newFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.result) {
@@ -161,6 +161,8 @@ export class ProviderProfileComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     });
+
+    input.value = '';
   }
 
   uploadWorkImages() {
