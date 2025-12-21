@@ -9,7 +9,6 @@ import { Header } from '../../../shared/header/header';
   selector: 'app-provider-details',
   imports: [CommonModule, RouterLink, Header],
   templateUrl: './provider-details.html',
-  styleUrl: './provider-details.scss',
 })
 export class ProviderDetails implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
