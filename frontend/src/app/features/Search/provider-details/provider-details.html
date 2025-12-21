@@ -52,7 +52,7 @@
     <div class="rounded-2xl bg-white p-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)]" *ngIf="provider.workImages && provider.workImages.length">
       <h2 class="mb-4 text-xl font-semibold text-slate-900">Réalisations</h2>
       <div class="grid gap-4">
-        <div class="flex h-80 w-full items-center justify-center overflow-hidden rounded-[18px] bg-slate-50 shadow-[0_10px_24px_rgba(0,0,0,0.08)] sm:h-[320px]">
+        <div class="flex h-80 w-full items-center justify-center overflow-hidden rounded-[18px] bg-slate-50 shadow-[0_10px_24px_rgba(0,0,0,0.08)] sm:h-[820px]">
           <img
             *ngIf="activeWorkImage"
             [src]="activeWorkImage"
@@ -68,7 +68,7 @@
             type="button"
             (click)="selectWorkImage(index)"
           >
-            <img [src]="image" class="h-full w-full object-cover" alt="Miniature réalisation" />
+            <img [src]="image" class="h-full w-full object-cover"  />
           </button>
         </div>
       </div>
