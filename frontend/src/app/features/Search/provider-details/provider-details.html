@@ -44,12 +44,25 @@
     <div class="provider-details__section" *ngIf="provider.workImages && provider.workImages.length">
       <h2>Réalisations</h2>
       <div class="provider-details__gallery">
-        <img
-          *ngFor="let image of provider.workImages"
-          [src]="image"
-          class="provider-details__gallery-image"
-          alt="Réalisation du provider"
-        />
+        <div class="provider-details__gallery-main">
+          <img
+            *ngIf="activeWorkImage"
+            [src]="activeWorkImage"
+            class="provider-details__gallery-main-image"
+            alt="Réalisation principale"
+          />
+        </div>
+        <div class="provider-details__gallery-thumbs">
+          <button
+            *ngFor="let image of provider.workImages; let index = index"
+            class="provider-details__gallery-thumb"
+            [class.provider-details__gallery-thumb--active]="index === selectedWorkImageIndex"
+            type="button"
+            (click)="selectWorkImage(index)"
+          >
+            <img [src]="image" alt="Miniature réalisation" />
+          </button>
+        </div>
       </div>
     </div>
   </div>

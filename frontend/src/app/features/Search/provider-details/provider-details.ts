@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SearchProviderService } from '../services/provider-search.service';
@@ -11,7 +11,7 @@ import { Header } from '../../../shared/header/header';
   templateUrl: './provider-details.html',
   styleUrl: './provider-details.scss',
 })
-export class ProviderDetails implements OnInit {
+export class ProviderDetails implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly searchService = inject(SearchProviderService);
   private readonly router = inject(Router);
@@ -20,6 +20,8 @@ export class ProviderDetails implements OnInit {
   isLoading = true;
   errorMessage = '';
   readonly defaultAvatarUrl = '/assets/default-avatar.png';
+  selectedWorkImageIndex = 0;
+  private rotationIntervalId?: number;
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params) => {
@@ -37,6 +39,8 @@ export class ProviderDetails implements OnInit {
         next: (provider) => {
           this.provider = provider;
           this.isLoading = false;
+          this.selectedWorkImageIndex = 0;
+          this.startWorkImageRotation();
         },
         error: () => {
           this.errorMessage = 'Impossible de charger le profil du provider.';
@@ -44,6 +48,10 @@ export class ProviderDetails implements OnInit {
         },
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.stopWorkImageRotation();
   }
 
   bookProvider() {
@@ -54,4 +62,42 @@ export class ProviderDetails implements OnInit {
     this.router.navigate(['/providers', this.provider.id, 'booking']);
   }
 
+  get activeWorkImage(): string | null {
+    if (!this.provider?.workImages?.length) {
+      return null;
+    }
+    return this.provider.workImages[this.selectedWorkImageIndex] ?? this.provider.workImages[0];
+  }
+
+  selectWorkImage(index: number) {
+    if (!this.provider?.workImages?.length) {
+      return;
+    }
+    this.selectedWorkImageIndex = index;
+    this.restartWorkImageRotation();
+  }
+
+  private startWorkImageRotation() {
+    this.stopWorkImageRotation();
+    if (!this.provider?.workImages?.length || this.provider.workImages.length < 2) {
+      return;
+    }
+    this.rotationIntervalId = window.setInterval(() => {
+      if (!this.provider?.workImages?.length) {
+        return;
+      }
+      this.selectedWorkImageIndex = (this.selectedWorkImageIndex + 1) % this.provider.workImages.length;
+    }, 3000);
+  }
+
+  private restartWorkImageRotation() {
+    this.startWorkImageRotation();
+  }
+
+  private stopWorkImageRotation() {
+    if (this.rotationIntervalId) {
+      window.clearInterval(this.rotationIntervalId);
+      this.rotationIntervalId = undefined;
+    }
+  }
 }
