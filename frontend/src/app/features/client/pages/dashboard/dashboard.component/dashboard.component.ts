@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { AsideComponent } from '../../../components/aside/aside.component';
 import { BookingsListComponent } from '../../bookings/list/requests-list.component/bookings-list.component';
@@ -8,7 +9,7 @@ import { ShowMessageService } from '../../../../../shared/services/showmessage.s
 
 @Component({
   selector: 'app-dashboard.component',
-  imports: [BookingsListComponent, AsideComponent, StatCardComponent],
+  imports: [CommonModule, BookingsListComponent, AsideComponent, StatCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -39,4 +40,5 @@ export class DashboardComponent implements OnInit {
   onBookingStatusChanged() {
     this.loadStats();
   }
+
 }

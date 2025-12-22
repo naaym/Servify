@@ -4,6 +4,7 @@ import { Landing } from './features/landing/landing';
 import { Client } from './features/client/pages/signup/client/client';
 import { Login } from './features/auth/login/login';
 import { Test } from './features/test/test';
+import { CheckoutComponent } from './features/payments/checkout/checkout';
 
 
 export const routes: Routes = [
@@ -15,6 +16,7 @@ export const routes: Routes = [
   // loadComponent: () => import('./features/landing/landing').then(m => m.Landing)},
   {path:'login',component:Login},
   {path:'test',component:Test},
+  {path:'checkout',component:CheckoutComponent},
 
   {
     path: 'clients',
