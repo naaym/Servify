@@ -15,6 +15,18 @@ export interface PaymentConfigResponse {
   defaultAmount: string;
 }
 
+export interface PaymentHistoryItem {
+  bookingId: number;
+  paymentIntentId: string;
+  amount: number;
+  currency: string;
+  status: string;
+  createdAt: string;
+  providerName?: string;
+  clientName?: string;
+  bookingDate?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
   private http = inject(Http);
@@ -25,5 +37,13 @@ export class PaymentService {
 
   createPaymentIntent(orderId: number) {
     return this.http.post<PaymentIntentResponse>(API_ENDPOINTS.PAYMENTS.INTENTS, { orderId });
+  }
+
+  getClientHistory() {
+    return this.http.get<PaymentHistoryItem[]>(API_ENDPOINTS.PAYMENTS.HISTORY);
+  }
+
+  getProviderHistory() {
+    return this.http.get<PaymentHistoryItem[]>(API_ENDPOINTS.PAYMENTS.PROVIDER_HISTORY);
   }
 }

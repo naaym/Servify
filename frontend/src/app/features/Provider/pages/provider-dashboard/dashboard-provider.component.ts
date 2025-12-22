@@ -6,6 +6,7 @@ import { ProviderBookingResponse } from '../../models/provider-booking.model';
 import { Status } from '../../../booking/models/status.model';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ChatNotificationService } from '../../../chat/services/chat-notification.service';
+import { PaymentHistoryItem, PaymentService } from '../../../payments/services/payment.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,14 +20,21 @@ export class ProviderDashboard implements OnInit {
     private readonly chatNotificationService = inject(ChatNotificationService);
     readonly unreadCount$ = this.chatNotificationService.unreadCount$;
   bookings: ProviderBookingResponse[] = [];
+  payments: PaymentHistoryItem[] = [];
   errorMessage = '';
+  paymentsError = '';
   loading = false;
+  paymentsLoading = false;
 
-  constructor(private readonly bookingService: ProviderBookingService) {}
+  constructor(
+    private readonly bookingService: ProviderBookingService,
+    private readonly paymentService: PaymentService
+  ) {}
 
   ngOnInit(): void {
     this.chatNotificationService.startPolling();
     this.loadBookings();
+    this.loadPayments();
   }
 
   loadBookings() {
@@ -39,6 +47,21 @@ export class ProviderDashboard implements OnInit {
       error: (err) => {
         this.errorMessage = err.message;
         this.loading = false;
+      },
+    });
+  }
+
+  loadPayments() {
+    this.paymentsLoading = true;
+    this.paymentService.getProviderHistory().subscribe({
+      next: (payments) => {
+        this.payments = payments;
+        this.paymentsError = '';
+        this.paymentsLoading = false;
+      },
+      error: (err) => {
+        this.paymentsError = err.message ?? 'Impossible de charger les paiements';
+        this.paymentsLoading = false;
       },
     });
   }
