@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { loadStripe, Stripe, StripeElements, StripeCardElement } from '@stripe/stripe-js';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentService } from '../services/payment.service';
 import { ShowMessageService } from '../../../shared/services/showmessage.service';
 
@@ -19,6 +19,7 @@ export class CheckoutComponent implements AfterViewInit {
   private paymentService = inject(PaymentService);
   private messageService = inject(ShowMessageService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   stripe: Stripe | null = null;
   elements: StripeElements | null = null;
@@ -85,6 +86,7 @@ export class CheckoutComponent implements AfterViewInit {
         } else {
           this.statusMessage = 'Paiement en cours de confirmation...';
           this.messageService.show('success', 'Paiement envoyé, en attente de confirmation.');
+          this.router.navigate(['/clients/dashboard']);
         }
         this.processing = false;
       },
