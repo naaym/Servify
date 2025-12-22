@@ -6,7 +6,6 @@ import { ClientBookingService } from '../../bookings/clientbooking.service';
 import { StatsBooking } from '../../bookings/statsbooking.model';
 import { StatCardComponent } from '../../../components/stat-card/stat-card.component/stat-card.component';
 import { ShowMessageService } from '../../../../../shared/services/showmessage.service';
-import { PaymentHistoryItem, PaymentService } from '../../../../payments/services/payment.service';
 
 @Component({
   selector: 'app-dashboard.component',
@@ -18,16 +17,11 @@ import { PaymentHistoryItem, PaymentService } from '../../../../payments/service
 export class DashboardComponent implements OnInit {
   clientbooking = inject(ClientBookingService);
   showmessage = inject(ShowMessageService);
-  paymentService = inject(PaymentService);
   stats: StatsBooking | null = null;
   errorMessage = "";
-  payments: PaymentHistoryItem[] = [];
-  paymentsError = "";
-  paymentsLoading = false;
 
   ngOnInit(): void {
     this.loadStats();
-    this.loadPayments();
   }
 
   loadStats() {
@@ -47,19 +41,4 @@ export class DashboardComponent implements OnInit {
     this.loadStats();
   }
 
-  loadPayments() {
-    this.paymentsLoading = true;
-    this.paymentService.getClientHistory().subscribe({
-      next: (payments: PaymentHistoryItem[]) => {
-        this.payments = payments;
-        this.paymentsError = "";
-        this.paymentsLoading = false;
-      },
-      error: (err: any) => {
-        this.paymentsError = err.message ?? 'Impossible de charger les paiements';
-        this.paymentsLoading = false;
-        this.showmessage.show('error', this.paymentsError);
-      },
-    });
-  }
 }
