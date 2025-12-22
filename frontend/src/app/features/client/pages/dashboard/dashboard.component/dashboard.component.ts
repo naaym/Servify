@@ -6,7 +6,7 @@ import { ClientBookingService } from '../../bookings/clientbooking.service';
 import { StatsBooking } from '../../bookings/statsbooking.model';
 import { StatCardComponent } from '../../../components/stat-card/stat-card.component/stat-card.component';
 import { ShowMessageService } from '../../../../../shared/services/showmessage.service';
-import { PaymentHistoryItem, PaymentService } from '../../../payments/services/payment.service';
+import { PaymentHistoryItem, PaymentService } from '../../../../payments/services/payment.service';
 
 @Component({
   selector: 'app-dashboard.component',
@@ -50,12 +50,12 @@ export class DashboardComponent implements OnInit {
   loadPayments() {
     this.paymentsLoading = true;
     this.paymentService.getClientHistory().subscribe({
-      next: (payments) => {
+      next: (payments: PaymentHistoryItem[]) => {
         this.payments = payments;
         this.paymentsError = "";
         this.paymentsLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.paymentsError = err.message ?? 'Impossible de charger les paiements';
         this.paymentsLoading = false;
         this.showmessage.show('error', this.paymentsError);

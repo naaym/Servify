@@ -54,12 +54,12 @@ export class ProviderDashboard implements OnInit {
   loadPayments() {
     this.paymentsLoading = true;
     this.paymentService.getProviderHistory().subscribe({
-      next: (payments) => {
+      next: (payments: PaymentHistoryItem[]) => {
         this.payments = payments;
         this.paymentsError = '';
         this.paymentsLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.paymentsError = err.message ?? 'Impossible de charger les paiements';
         this.paymentsLoading = false;
       },
