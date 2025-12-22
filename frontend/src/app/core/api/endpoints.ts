@@ -39,6 +39,15 @@ export const API_ENDPOINTS = {
 
   }
   ,
+  PAYMENTS: {
+    CONFIG: 'payments/config',
+    INTENTS: 'payments/intents'
+  },
+  PAYMENTS_CONNECT: {
+    ONBOARD: (providerId: number) => `payments-connect/providers/${providerId}/onboard`,
+    INTENTS: 'payments-connect/intents'
+  }
+  ,
   ADMIN:{
     BASE:'admins',
     STATS:'admins/stats',

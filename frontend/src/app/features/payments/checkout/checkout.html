@@ -1,0 +1,19 @@
+<section class="checkout">
+  <div class="checkout-card">
+    <h2>Paiement test Stripe</h2>
+    <p class="subtitle">Mode test uniquement. Carte de test recommandée.</p>
+
+    <label class="field">
+      <span>Order ID</span>
+      <input type="number" [(ngModel)]="orderId" />
+    </label>
+
+    <div #cardElement class="card-element"></div>
+
+    <button class="pay-button" (click)="pay()" [disabled]="processing">
+      {{ processing ? 'Traitement...' : ('Payer ' + defaultAmount + ' ' + (currency | uppercase)) }}
+    </button>
+
+    <p class="status" *ngIf="statusMessage">{{ statusMessage }}</p>
+  </div>
+</section>
