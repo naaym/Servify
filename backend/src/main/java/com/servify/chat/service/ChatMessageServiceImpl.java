@@ -20,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,22 +68,27 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public List<ChatConversationResponse> getConversations(String requesterEmail) {
         UserEntity requester = findUserByEmail(requesterEmail);
+        List<BookingEntity> bookings;
         List<ChatMessageEntity> messages;
         if (requester.getRole() == Role.CLIENT) {
+            bookings = bookingRepository.findByClientUserIdOrderByCreatedAtDesc(requester.getUserId());
             messages = chatMessageRepository.findByBookingClientUserIdOrderByCreatedAtDesc(requester.getUserId());
         } else if (requester.getRole() == Role.PROVIDER) {
+            bookings = bookingRepository.findByProviderUserIdOrderByCreatedAtDesc(requester.getUserId());
             messages = chatMessageRepository.findByBookingProviderUserIdOrderByCreatedAtDesc(requester.getUserId());
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized for messages");
         }
 
-        Map<Long, ChatConversationResponse> conversations = new LinkedHashMap<>();
+        Map<Long, ChatMessageEntity> latestMessages = new HashMap<>();
         for (ChatMessageEntity message : messages) {
-            Long bookingId = message.getBooking().getBookingId();
-            if (conversations.containsKey(bookingId)) {
-                continue;
-            }
-            BookingEntity booking = message.getBooking();
+            latestMessages.putIfAbsent(message.getBooking().getBookingId(), message);
+        }
+
+        List<ChatConversationResponse> conversations = new ArrayList<>();
+        for (BookingEntity booking : bookings) {
+            Long bookingId = booking.getBookingId();
+            ChatMessageEntity message = latestMessages.get(bookingId);
             String participantName;
             String participantImageUrl;
             if (requester.getRole() == Role.CLIENT) {
@@ -92,16 +98,23 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 participantName = booking.getClient().getName();
                 participantImageUrl = booking.getClient().getProfileImageUrl();
             }
-            conversations.put(bookingId, ChatConversationResponse.builder()
+
+            String lastMessage = message != null ? message.getContent() : "";
+            long lastMessageAt = message != null
+                    ? message.getCreatedAt().toEpochMilli()
+                    : booking.getCreatedAt().toEpochMilli();
+
+            conversations.add(ChatConversationResponse.builder()
                     .bookingId(bookingId)
                     .participantName(participantName)
                     .participantImageUrl(participantImageUrl)
-                    .lastMessage(message.getContent())
-                    .lastMessageAt(message.getCreatedAt().toEpochMilli())
+                    .lastMessage(lastMessage)
+                    .lastMessageAt(lastMessageAt)
                     .build());
         }
 
-        return new ArrayList<>(conversations.values());
+        conversations.sort(Comparator.comparing(ChatConversationResponse::getLastMessageAt).reversed());
+        return conversations;
     }
 
     private UserEntity findUserByEmail(String email) {
