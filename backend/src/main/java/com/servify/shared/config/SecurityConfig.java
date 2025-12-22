@@ -57,7 +57,6 @@ public class SecurityConfig {
           "/api/providers/search",
           "/api/providers/search/options/**",
           "/api/webhooks/stripe",
-          "/api/payments-connect/webhooks/stripe",
           "/api/payments/config",
           "/ws/**"
         ).permitAll()

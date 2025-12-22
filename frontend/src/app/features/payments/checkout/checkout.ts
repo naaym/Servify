@@ -25,7 +25,7 @@ export class CheckoutComponent implements AfterViewInit {
   statusMessage = '';
   defaultAmount = '30.00';
   currency = 'eur';
-  orderId = 1;
+  orderId?: number;
 
   async ngAfterViewInit(): Promise<void> {
     this.paymentService.getConfig().subscribe({
@@ -57,6 +57,10 @@ export class CheckoutComponent implements AfterViewInit {
     }
     if (!this.stripe || !this.card) {
       this.messageService.show('error', 'Stripe n’est pas prêt.');
+      return;
+    }
+    if (!this.orderId) {
+      this.messageService.show('error', 'Veuillez renseigner un bookingId.');
       return;
     }
     this.processing = true;

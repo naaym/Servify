@@ -4,13 +4,13 @@
     <p class="subtitle">Mode test uniquement. Carte de test recommandée.</p>
 
     <label class="field">
-      <span>Order ID</span>
+      <span>Booking ID</span>
       <input type="number" [(ngModel)]="orderId" />
     </label>
 
     <div #cardElement class="card-element"></div>
 
-    <button class="pay-button" (click)="pay()" [disabled]="processing">
+    <button class="pay-button" (click)="pay()" [disabled]="processing || !orderId">
       {{ processing ? 'Traitement...' : ('Payer ' + defaultAmount + ' ' + (currency | uppercase)) }}
     </button>
 

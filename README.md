@@ -1,6 +1,6 @@
 # Stripe Test Setup
 
-Ce repo contient une intégration Stripe **en mode test uniquement** pour un flow de paiement simple et Stripe Connect (plateforme + providers).
+Ce repo contient une intégration Stripe **en mode test uniquement** pour un flow de paiement simple.
 
 ## Variables d'environnement (Backend)
 
@@ -11,9 +11,6 @@ export STRIPE_PUBLISHABLE_KEY=pk_test_...
 export STRIPE_CURRENCY=eur
 export STRIPE_DEFAULT_AMOUNT=30.00
 
-export STRIPE_CONNECT_WEBHOOK_SECRET=whsec_...
-export STRIPE_CONNECT_REFRESH_URL=http://localhost:4200/connect/refresh
-export STRIPE_CONNECT_RETURN_URL=http://localhost:4200/connect/return
 ```
 
 > ⚠️ Ne jamais committer de clés réelles. Utiliser uniquement des clés **test**.
@@ -40,12 +37,7 @@ npm start
 stripe listen --forward-to localhost:8084/api/webhooks/stripe
 ```
 
-### Stripe Connect (plateforme)
-```bash
-stripe listen --forward-to localhost:8084/api/payments-connect/webhooks/stripe
-```
-
-Copier les secrets `whsec_...` retournés par Stripe CLI dans `STRIPE_WEBHOOK_SECRET` et `STRIPE_CONNECT_WEBHOOK_SECRET`.
+Copier le secret `whsec_...` retourné par Stripe CLI dans `STRIPE_WEBHOOK_SECRET`.
 
 ## Flow Paiement (standard)
 
@@ -56,26 +48,6 @@ Copier les secrets `whsec_...` retournés par Stripe CLI dans `STRIPE_WEBHOOK_SE
    - PaymentIntent créé sur Stripe (test).
    - Transaction enregistrée en DB (table `payment_transactions`).
    - Webhook reçu et statut mis à jour (SUCCEEDED ou FAILED).
-
-## Flow Stripe Connect (plateforme + provider)
-
-### Onboarding provider
-```bash
-POST /api/payments-connect/providers/{providerId}/onboard
-```
-Retourne un `accountId` et un `url` d'onboarding Stripe. Ouvrir l’URL pour compléter le onboarding (test).
-
-### Créer un PaymentIntent (charge client)
-```bash
-POST /api/payments-connect/intents
-{
-  "orderId": 123,
-  "providerId": 45
-}
-```
-
-### Webhook
-Lorsque `payment_intent.succeeded` est reçu, un `Transfer` est créé vers le `connected account`.
 
 ## Notes / limitations
 - Mode test uniquement (pas de débit réel).
