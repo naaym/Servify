@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { loadStripe, Stripe, StripeElements, StripeCardElement } from '@stripe/stripe-js';
+import { ActivatedRoute } from '@angular/router';
 import { PaymentService } from '../services/payment.service';
 import { ShowMessageService } from '../../../shared/services/showmessage.service';
 
@@ -17,6 +18,7 @@ export class CheckoutComponent implements AfterViewInit {
 
   private paymentService = inject(PaymentService);
   private messageService = inject(ShowMessageService);
+  private route = inject(ActivatedRoute);
 
   stripe: Stripe | null = null;
   elements: StripeElements | null = null;
@@ -28,6 +30,11 @@ export class CheckoutComponent implements AfterViewInit {
   orderId?: number;
 
   async ngAfterViewInit(): Promise<void> {
+    const bookingIdParam = this.route.snapshot.queryParamMap.get('bookingId');
+    if (bookingIdParam) {
+      const parsedId = Number(bookingIdParam);
+      this.orderId = Number.isNaN(parsedId) ? undefined : parsedId;
+    }
     this.paymentService.getConfig().subscribe({
       next: async (config) => {
         this.defaultAmount = config.defaultAmount;
