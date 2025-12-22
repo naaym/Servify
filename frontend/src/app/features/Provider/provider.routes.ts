@@ -8,6 +8,7 @@ import { ProviderDashboard } from "./pages/provider-dashboard/dashboard-provider
 import { ProviderBookingDetailsComponent } from "./pages/booking-details/provider-booking-details.component";
 import { ProviderProfileComponent } from "./pages/profile/provider-profile.component";
 import { BookingChatsComponent } from "../chat/chat.component";
+import { ProviderPaymentHistoryComponent } from "../payments/pages/provider-payment-history/provider-payment-history.component";
 
 
 
@@ -17,6 +18,7 @@ export const PROVIDER_ROUTES :Routes= [
   {path :'account-rejection',component:AccountRejction},
   {path :'dashboard',component:ProviderDashboard},
   {path :'chats',component:BookingChatsComponent},
+  {path :'payments',component:ProviderPaymentHistoryComponent},
   {path :'profile',component:ProviderProfileComponent},
   {path :'bookings/:bookingId',component:ProviderBookingDetailsComponent},
 

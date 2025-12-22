@@ -56,7 +56,10 @@ public class SecurityConfig {
           "/api/providers/register",
           "/api/providers/search",
           "/api/providers/search/options/**",
-          "/ws/**"
+          "/api/webhooks/stripe",
+          "/api/payments/config",
+          "/ws/**",
+                "/api/payments/historique"
         ).permitAll()
         .requestMatchers(HttpMethod.GET, "/api/providers/{id:\\d+}").permitAll()
         .anyRequest().authenticated()

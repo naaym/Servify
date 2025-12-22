@@ -43,6 +43,7 @@ export class ProviderDashboard implements OnInit {
     });
   }
 
+
   onUpdateStatus(bookingId: number, status: Status) {
     this.bookingService.updateStatus(bookingId, status).subscribe({
       next: (updated) => {
