@@ -37,19 +37,16 @@ export const API_ENDPOINTS = {
     PROVIDER:'provider',
     MESSAGES:(id:number)=>`bookings/${id}/messages`
 
-  }
-  ,
+  },
   PAYMENTS: {
     CONFIG: 'payments/config',
     INTENTS: 'payments/intents'
   },
-  ,
-  ADMIN:{
+  ADMIN: {
     BASE:'admins',
     STATS:'admins/stats',
     PROVIDER_REQUESTS:'admins/providers',
-    PROVIDER_STATUS:(id:number)=>`admins/providers/${id}/status`
-    ,
+    PROVIDER_STATUS:(id:number)=>`admins/providers/${id}/status`,
     PROVIDERS:'admins/providers'
   }
 };
