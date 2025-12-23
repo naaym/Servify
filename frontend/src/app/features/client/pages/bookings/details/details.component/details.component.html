@@ -240,7 +240,7 @@
         </button>
       }
 
-      @if(bookingDetails?.status === 'ACCEPTED'){
+      @if(bookingDetails?.status === 'ACCEPTED' && !isPaid){
         <button
           (click)="payBooking()"
           class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 shadow transition"

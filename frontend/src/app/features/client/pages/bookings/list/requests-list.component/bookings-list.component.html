@@ -65,7 +65,7 @@
                 Modifier
               </button>
             }
-            @if (r.status === 'ACCEPTED') {
+            @if (canPay(r)) {
               <button
                 class="text-green-400 hover:underline text-xs sm:text-sm ml-2"
                 (click)="onPay(r.bookingId)"
