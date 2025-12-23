@@ -73,7 +73,7 @@
                 Payer
               </button>
             }
-            @if(r.status!=='CANCELLED' && r.status!=='DONE'){
+            @if(r.status!=='CANCELLED' && r.status!=='DONE' && !paidBookingIds.has(r.bookingId)){
             <button class="text-red-400 hover:underline text-xs sm:text-sm ml-2" (click)="onCancel(r.bookingId)">
               Cancel
             </button>
