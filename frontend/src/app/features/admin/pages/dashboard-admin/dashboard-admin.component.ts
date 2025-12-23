@@ -35,7 +35,7 @@ export class DashboardAdmin implements OnInit {
   adminError?: string;
   clientError?: string;
   selectedProvider?: ProviderApplication;
-  activeSection: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins' = 'dashboard';
+  activeSection: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins' | 'chats' = 'dashboard';
   isSuperAdmin = false;
   admins: AdminResponse[] = [];
   clients: ClientResponse[] = [];
@@ -108,7 +108,7 @@ export class DashboardAdmin implements OnInit {
     return this.providerRevenueSummary.find((summary) => summary.providerId === providerId);
   }
 
-  switchSection(section: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins') {
+  switchSection(section: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins' | 'chats') {
     this.activeSection = section;
     this.error = undefined;
     this.adminError = undefined;
