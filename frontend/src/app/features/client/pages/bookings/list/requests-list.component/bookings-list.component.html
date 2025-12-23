@@ -65,6 +65,14 @@
                 Modifier
               </button>
             }
+            @if (r.status === 'ACCEPTED') {
+              <button
+                class="text-green-400 hover:underline text-xs sm:text-sm ml-2"
+                (click)="onPay(r.bookingId)"
+              >
+                Payer
+              </button>
+            }
             @if(r.status!=='CANCELLED' && r.status!=='DONE'){
             <button class="text-red-400 hover:underline text-xs sm:text-sm ml-2" (click)="onCancel(r.bookingId)">
               Cancel

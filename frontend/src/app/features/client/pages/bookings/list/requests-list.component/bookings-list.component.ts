@@ -44,5 +44,9 @@ export class BookingsListComponent implements OnInit{
     this.router.navigate([`/clients/bookings/${id}`], { queryParams: { edit: 'true' } });
   }
 
+  onPay(id: number) {
+    this.router.navigate(['/checkout'], { queryParams: { bookingId: id } });
+  }
+
 
 }
