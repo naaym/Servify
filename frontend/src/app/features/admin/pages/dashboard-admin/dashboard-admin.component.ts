@@ -97,6 +97,10 @@ export class DashboardAdmin implements OnInit {
     return (this.providerRevenueSummary[0]?.currency || 'EUR').toUpperCase();
   }
 
+  getRevenueForProvider(providerId: number) {
+    return this.providerRevenueSummary.find((summary) => summary.providerId === providerId);
+  }
+
   switchSection(section: 'dashboard' | 'providers' | 'clients' | 'bookings' | 'services' | 'admins') {
     this.activeSection = section;
     this.error = undefined;
